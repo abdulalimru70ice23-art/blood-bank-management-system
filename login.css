@@ -1,0 +1,261 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+/* BODY */
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+position:relative;
+
+background-image:linear-gradient(
+rgba(0,0,0,0.45),
+rgba(0,0,0,0.45)
+), url("./Images/blood-bg3.jpg");
+
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+}
+
+/* CONTAINER */
+
+.container{
+width:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* LOGIN CARD */
+
+.login-card{
+
+width:90%;
+max-width:380px;
+
+background:rgba(255,255,255,0.92);
+backdrop-filter:blur(12px);
+
+padding:40px 30px;
+
+border-radius:20px;
+
+box-shadow:0 15px 40px rgba(0,0,0,0.25);
+
+text-align:center;
+
+animation:fadeIn 0.8s ease;
+}
+
+/* LOGO */
+
+.logo{
+font-size:50px;
+margin-bottom:10px;
+}
+
+/* BRAND */
+
+.brand{
+font-size:32px;
+font-weight:600;
+color:#c1121f;
+margin-top:10px;
+}
+
+/* TITLE */
+
+.title{
+font-size:16px;
+color:#666;
+letter-spacing:1px;
+margin-bottom:10px;
+}
+
+/* SUBTITLE */
+
+.subtitle{
+font-size:14px;
+color:#777;
+margin-bottom:25px;
+}
+
+/* INPUT */
+
+input{
+width:100%;
+padding:12px;
+border-radius:8px;
+border:1px solid #ddd;
+font-size:14px;
+margin-bottom:15px;
+transition:0.3s;
+}
+
+input:focus{
+border-color:#ff4b5c;
+outline:none;
+box-shadow:0 0 5px rgba(255,75,92,0.5);
+}
+
+/* OPTIONS */
+
+.options{
+text-align:right;
+margin-bottom:15px;
+}
+
+.options a{
+font-size:13px;
+color:#ff4b5c;
+text-decoration:none;
+}
+
+.options a:hover{
+text-decoration:underline;
+}
+
+/* LOGIN BUTTON */
+
+.login-btn{
+width:100%;
+padding:13px;
+border:none;
+border-radius:8px;
+background:linear-gradient(90deg,#ff4b5c,#ff7a5c);
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.login-btn:hover{
+transform:scale(1.05);
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* REGISTER */
+
+.register{
+margin-top:20px;
+font-size:14px;
+}
+
+.register a{
+color:#d90429;
+font-weight:500;
+text-decoration:none;
+}
+
+.register a:hover{
+text-decoration:underline;
+}
+
+/* ANIMATION */
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* BACK BUTTON */
+
+.back-home{
+
+position:absolute;
+
+top:25px;
+left:35px;
+
+text-decoration:none;
+
+color:white;
+
+font-size:20px;
+
+font-weight:500;
+
+transition:0.3s;
+
+}
+
+.back-home:hover{
+
+color:#ff4b5c;
+
+}
+
+/* MOBILE */
+
+@media (max-width:600px){
+
+.login-card{
+width:85%;
+padding:30px 20px;
+}
+
+.brand{
+font-size:26px;
+}
+
+.title{
+font-size:14px;
+}
+
+}
+
+
+
+
+/* Existing CSS above */
+
+/* ========================= */
+/* Mobile Responsive Fix */
+/* ========================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+.container{
+width:90%;
+max-width:1200px;
+margin:auto;
+}
+
+@media (max-width:768px){
+
+.hero{
+flex-direction:column;
+text-align:center;
+}
+
+.navbar{
+flex-direction:column;
+}
+
+.menu{
+display:block;
+}
+
+.buttons{
+flex-direction:column;
+gap:10px;
+}
+
+}

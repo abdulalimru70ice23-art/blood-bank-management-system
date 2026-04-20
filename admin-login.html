@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Login - LifeShare</title>
+
+<link rel="stylesheet" href="admin-login.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<a href="index.html" class="back-home">← Back to Home</a>
+
+<div class="login-wrapper">
+
+<div class="admin-card">
+
+<div class="logo">🩸</div>
+
+<h1 class="brand">LifeShare</h1>
+
+<h2 class="title">Admin Panel</h2>
+
+<p class="subtitle">Authorized personnel only</p>
+
+<form onsubmit="return adminLogin()">
+
+<div class="input-group">
+<input type="text" id="adminUser" placeholder="Admin Email / ID">
+</div>
+
+<div class="input-group">
+<input type="password" id="adminPass" placeholder="Admin Password">
+</div>
+
+<div class="input-group">
+<input type="text" id="adminCode" placeholder="Security Code">
+</div>
+
+<div class="options">
+<a href="admin-forgot-password.html">Forgot Password?</a>
+</div>
+
+<button class="login-btn" type="submit">Login as Admin</button>
+
+</form>
+
+<p class="warning">
+⚠ Unauthorized access is prohibited
+</p>
+
+</div>
+
+</div>
+
+
+<script>
+
+function adminLogin(){
+
+let username = document.getElementById("adminUser").value;
+let password = document.getElementById("adminPass").value;
+let code = document.getElementById("adminCode").value;
+
+if(username === "" || password === "" || code === ""){
+
+alert("Please fill all fields!");
+return false;
+
+}
+
+if(username === "admin" && password === "12345" && code === "RU123"){
+
+localStorage.setItem("adminLoggedIn","true");
+
+window.location.href="admin-dashboard.html";
+
+return false;
+
+}
+
+else{
+
+alert("Invalid admin credentials!");
+return false;
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

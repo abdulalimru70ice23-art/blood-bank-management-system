@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Donor List - LifeShare</title>
+
+<link rel="stylesheet" href="admin-dashboard.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="sidebar">
+
+<h2>🩸 LifeShare</h2>
+
+<ul>
+
+<li><a href="admin-dashboard.html">Dashboard</a></li>
+<li class="active">Donor List</li>
+
+</ul>
+
+<a href="index.html" class="logout">Logout</a>
+
+</div>
+
+
+<div class="main">
+
+<h1>All Donors</h1>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+<th>Blood</th>
+<th>Location</th>
+<th>Phone</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="donorTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<script>
+
+async function loadDonors(){
+
+const res = await fetch("http://127.0.0.1:5000/donors");
+
+const donors = await res.json();
+
+const table = document.getElementById("donorTable");
+
+table.innerHTML="";
+
+donors.forEach(donor=>{
+
+const row = document.createElement("tr");
+
+row.innerHTML=`
+
+<td>${donor.name}</td>
+<td>${donor.blood}</td>
+<td>${donor.location}</td>
+<td>${donor.phone}</td>
+
+<td>
+<button onclick="deleteDonor('${donor._id}')">Delete</button>
+</td>
+
+`;
+
+table.appendChild(row);
+
+});
+
+}
+
+
+async function deleteDonor(id){
+
+if(confirm("Delete this donor?")){
+
+await fetch(`http://127.0.0.1:5000/delete-donor/${id}`,{
+
+method:"DELETE"
+
+});
+
+alert("Donor Deleted");
+
+loadDonors();
+
+}
+
+}
+
+
+loadDonors();
+
+</script>
+
+</body>
+</html>

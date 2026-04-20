@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Request Blood - LifeShare</title>
+
+<link rel="stylesheet" href="request-blood.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+<div class="logo">🩸 LifeShare</div>
+
+<ul class="nav-links">
+
+<li><a href="index.html">Home</a></li>
+<li><a href="find-donor.html">Find Donor</a></li>
+<li><a href="donate.html">Donate Blood</a></li>
+<li><a href="request-blood.html">Request Blood</a></li>
+<li><a href="volunteer.html">Volunteer</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li><a href="login.html">Login</a></li>
+<li><a href="register.html" class="signup-btn">Sign Up</a></li>
+
+</ul>
+
+</nav>
+
+<!-- HEADER -->
+
+<section class="header">
+
+<h1>Request Blood</h1>
+<p>Fill out the form below to request blood urgently</p>
+
+</section>
+
+<!-- FORM SECTION -->
+
+<div class="request-container">
+
+<form class="request-form" onsubmit="return validateForm()">
+
+<div class="form-left">
+
+<label>Patient Name</label>
+<input type="text" id="name" placeholder="Enter patient name">
+
+<label>Contact Number</label>
+<input type="text" id="phone" placeholder="Phone number">
+
+<label>Blood Group Needed</label>
+
+<select id="bloodGroup">
+<option>Select blood group</option>
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>AB+</option>
+<option>AB-</option>
+<option>O+</option>
+<option>O-</option>
+</select>
+
+<label>Hospital / Location</label>
+<input type="text" placeholder="Enter hospital or location">
+
+<label>Units Needed</label>
+<input type="number" placeholder="Example: 2 bags">
+
+</div>
+
+<div class="form-right">
+
+<label>Reason / Medical Condition</label>
+<textarea placeholder="Explain why blood is needed..." rows="6"></textarea>
+
+<label>Upload Medical Document</label>
+
+<div class="upload-box">
+
+<input type="file">
+
+</div>
+
+<label>Urgency Level</label>
+
+<select>
+<option>Normal</option>
+<option>Urgent</option>
+<option>Emergency</option>
+</select>
+
+</div>
+
+<div class="submit-area">
+
+<button type="submit" onclick="showPopup()">Send Blood Request</button>
+
+</div>
+
+</form>
+
+</div>
+
+<!-- FOOTER -->
+
+<footer>
+
+<p>© 2026 LifeShare Blood Bank Management System</p>
+
+</footer>
+
+<script src="script.js"></script>
+
+
+<script>
+
+document.querySelector("form").addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+const request = {
+
+patient: document.querySelector("input[placeholder='Enter patient name']").value,
+phone: document.querySelector("input[placeholder='Phone number']").value,
+blood: document.querySelector("select").value,
+location: document.querySelector("input[placeholder='Enter hospital or location']").value,
+reason: document.querySelector("textarea").value
+
+};
+
+const res = await fetch("http://127.0.0.1:5000/add-request",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body: JSON.stringify(request)
+
+});
+
+const data = await res.text();
+
+alert(data);
+
+});
+
+</script>
+
+
+</body>
+
+</html>

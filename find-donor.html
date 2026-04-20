@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Find Blood Donor - LifeShare</title>
+
+<link rel="stylesheet" href="find-donor.css">
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">🩸 LifeShare</div>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="find-donor.html">Find Donor</a>
+<a href="request-blood.html">Request Blood</a>
+<a href="volunteer.html">Volunteer</a>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+<a href="login.html">Login</a>
+<a href="signup.html" class="signup-btn">Sign Up</a>
+</nav>
+
+</header>
+
+
+<main>
+
+<section class="search-section">
+
+<h1>Find Blood Donors</h1>
+<p>Search donors by blood group or location</p>
+
+<div class="search-box">
+
+<select id="bloodFilter" onchange="filterDonors()">
+
+<option value="all">All Blood Groups</option>
+<option value="A+">A+</option>
+<option value="A-">A-</option>
+<option value="B+">B+</option>
+<option value="B-">B-</option>
+<option value="AB+">AB+</option>
+<option value="AB-">AB-</option>
+<option value="O+">O+</option>
+<option value="O-">O-</option>
+
+</select>
+
+<input type="text" id="locationInput" placeholder="Search location..." onkeyup="filterDonors()">
+
+</div>
+
+</section>
+
+
+<section class="donor-list" id="donorList">
+
+<!-- Donors will load here -->
+
+</section>
+
+</main>
+
+
+<footer>
+
+<p>© 2026 LifeShare Blood Bank Management System</p>
+
+</footer>
+
+
+<script>
+
+let allDonors = [];
+
+
+// ======================
+// LOAD DONORS FROM DB
+// ======================
+
+async function loadDonors(){
+
+const res = await fetch("http://127.0.0.1:5000/donors");
+
+allDonors = await res.json();
+
+displayDonors(allDonors);
+
+}
+
+
+// ======================
+// DISPLAY DONORS
+// ======================
+
+function displayDonors(donors){
+
+const list = document.getElementById("donorList");
+
+list.innerHTML = "";
+
+donors.forEach(donor => {
+
+const card = document.createElement("div");
+
+card.className = "donor-card";
+
+card.innerHTML = `
+<h3>${donor.name}</h3>
+<p>Blood Group: ${donor.blood}</p>
+<p class="location">Location: ${donor.location}</p>
+<a href="login.html" class="contact-btn">🔐 Login to Contact</a>
+`;
+
+list.appendChild(card);
+
+});
+
+}
+
+
+// ======================
+// FILTER DONORS
+// ======================
+
+function filterDonors(){
+
+let blood = document.getElementById("bloodFilter").value.toLowerCase();
+let location = document.getElementById("locationInput").value.toLowerCase();
+
+let filtered = allDonors.filter(donor => {
+
+let bloodMatch = blood === "all" || donor.blood.toLowerCase() === blood;
+let locationMatch = donor.location.toLowerCase().includes(location);
+
+return bloodMatch && locationMatch;
+
+});
+
+displayDonors(filtered);
+
+}
+
+
+// ======================
+// LOAD WHEN PAGE OPEN
+// ======================
+
+loadDonors();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,337 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+/* BODY BACKGROUND */
+
+body{
+
+background:linear-gradient(135deg,#f8f9fa,#ffe5e5,#f3f9ff);
+
+min-height:100vh;
+
+}
+
+/* NAVBAR */
+
+.navbar{
+
+background:#c1121f;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:15px 60px;
+
+color:white;
+
+}
+
+.logo{
+
+font-size:20px;
+font-weight:600;
+
+}
+
+.nav-links{
+
+display:flex;
+list-style:none;
+gap:30px;
+
+}
+
+.nav-links a{
+
+text-decoration:none;
+color:white;
+font-size:15px;
+
+transition:0.3s;
+
+}
+
+.nav-links a:hover{
+
+color:#ffd6d6;
+
+}
+
+.signup-btn{
+
+background:white;
+color:#c1121f !important;
+
+padding:6px 16px;
+
+border-radius:20px;
+
+font-weight:500;
+
+}
+
+/* HEADER */
+
+.header{
+
+text-align:center;
+
+padding:70px 20px;
+
+}
+
+.header h1{
+
+font-size:36px;
+
+color:#c1121f;
+
+margin-bottom:10px;
+
+}
+
+.header p{
+
+color:#555;
+
+font-size:15px;
+
+}
+
+/* REQUEST FORM CARD */
+
+.request-container{
+
+max-width:1000px;
+
+margin:auto;
+
+padding:40px;
+
+border-radius:15px;
+
+/* glass effect */
+
+background:rgba(255,255,255,0.7);
+
+backdrop-filter:blur(10px);
+
+box-shadow:0 15px 35px rgba(0,0,0,0.2);
+
+}
+
+/* FORM LAYOUT */
+
+.request-form{
+
+display:flex;
+gap:40px;
+flex-wrap:wrap;
+
+}
+
+.form-left,
+.form-right{
+
+flex:1;
+
+display:flex;
+flex-direction:column;
+
+}
+
+/* LABEL */
+
+label{
+
+font-size:14px;
+
+color:#444;
+
+margin-bottom:5px;
+
+}
+
+/* INPUT */
+
+input,
+select,
+textarea{
+
+padding:12px;
+
+border-radius:8px;
+
+border:1px solid #ddd;
+
+margin-bottom:15px;
+
+font-size:14px;
+
+transition:0.3s;
+
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+
+border-color:#ff4b5c;
+
+outline:none;
+
+box-shadow:0 0 6px rgba(255,75,92,0.4);
+
+}
+
+/* FILE UPLOAD BOX */
+
+.upload-box{
+
+border:2px dashed #ffb3b3;
+
+padding:25px;
+
+border-radius:10px;
+
+background:#fff5f5;
+
+text-align:center;
+
+margin-bottom:15px;
+
+}
+
+/* BUTTON AREA */
+
+.submit-area{
+
+width:100%;
+
+text-align:center;
+
+margin-top:10px;
+
+}
+
+/* BUTTON */
+
+button{
+
+background:linear-gradient(90deg,#ff4b5c,#ff7a5c);
+
+color:white;
+
+padding:14px 45px;
+
+border:none;
+
+border-radius:8px;
+
+font-size:16px;
+
+cursor:pointer;
+
+transition:0.3s;
+
+}
+
+/* BUTTON HOVER */
+
+button:hover{
+
+transform:scale(1.05);
+
+box-shadow:0 8px 20px rgba(0,0,0,0.25);
+
+}
+
+/* FOOTER */
+
+footer{
+
+margin-top:60px;
+
+background:#222;
+
+color:white;
+
+text-align:center;
+
+padding:20px;
+
+}
+
+/* MOBILE */
+
+@media (max-width:768px){
+
+.navbar{
+
+flex-direction:column;
+
+gap:10px;
+
+}
+
+.request-form{
+
+flex-direction:column;
+
+}
+
+.header h1{
+
+font-size:28px;
+
+}
+
+}
+
+
+
+
+/* Existing CSS above */
+
+/* ========================= */
+/* Mobile Responsive Fix */
+/* ========================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+.container{
+width:90%;
+max-width:1200px;
+margin:auto;
+}
+
+@media (max-width:768px){
+
+.hero{
+flex-direction:column;
+text-align:center;
+}
+
+.navbar{
+flex-direction:column;
+}
+
+.menu{
+display:block;
+}
+
+.buttons{
+flex-direction:column;
+gap:10px;
+}
+
+}

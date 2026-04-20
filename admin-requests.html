@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Blood Requests - LifeShare</title>
+
+<link rel="stylesheet" href="admin-dashboard.css">
+
+</head>
+
+<body>
+
+<h1>Blood Requests</h1>
+
+<table border="1" width="100%">
+
+<thead>
+
+<tr>
+<th>Patient</th>
+<th>Blood</th>
+<th>Location</th>
+<th>Phone</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="requestTable"></tbody>
+
+</table>
+
+
+<script>
+
+// LOAD REQUESTS
+
+async function loadRequests(){
+
+const res = await fetch("http://127.0.0.1:5000/requests");
+
+const data = await res.json();
+
+const table = document.getElementById("requestTable");
+
+table.innerHTML="";
+
+data.forEach(req=>{
+
+const row = document.createElement("tr");
+
+row.innerHTML = `
+<td>${req.patient}</td>
+<td>${req.blood}</td>
+<td>${req.location}</td>
+<td>${req.phone}</td>
+
+<td style="color:${req.status === 'Approved' ? 'green' : 'orange'}">
+${req.status}
+</td>
+
+<td>
+<button onclick="approveRequest('${req._id}')">Approve</button>
+<button onclick="deleteRequest('${req._id}')">Delete</button>
+</td>
+`;
+
+table.appendChild(row);
+
+});
+
+}
+
+loadRequests();
+
+
+// APPROVE REQUEST
+
+async function approveRequest(id){
+
+await fetch("http://127.0.0.1:5000/approve-request/"+id,{
+method:"PUT"
+});
+
+alert("Request Approved");
+
+location.reload();
+
+}
+
+
+// DELETE REQUEST
+
+async function deleteRequest(id){
+
+await fetch("http://127.0.0.1:5000/delete-request/"+id,{
+method:"DELETE"
+});
+
+alert("Request Deleted");
+
+location.reload();
+
+}
+
+</script>
+
+</body>
+
+</html>

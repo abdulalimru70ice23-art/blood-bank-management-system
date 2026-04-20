@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard - LifeShare</title>
+
+<link rel="stylesheet" href="admin-dashboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>🩸 LifeShare</h2>
+
+<ul>
+
+<li class="active">Dashboard</li>
+<li><a href="admin-donor-list.html">Donor List</a></li>
+<li><a href="admin-requests.html">Blood Requests</a></li>
+<li>Volunteers</li>
+<li>Reports</li>
+<li>Settings</li>
+
+</ul>
+
+<a href="#" onclick="logout()">Logout</a>
+
+</div>
+
+<!-- Main -->
+
+<div class="main">
+
+<h1>Admin Dashboard</h1>
+
+<!-- Cards -->
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Donors</h3>
+<p id="totalDonors">0</p>
+</div>
+
+<div class="card">
+<h3>Blood Requests</h3>
+<p id="totalRequests">0</p>
+</div>
+
+<div class="card">
+<h3>Volunteers</h3>
+<p id="totalVolunteers">0</p>
+</div>
+
+<div class="card">
+<h3>Blood Donations</h3>
+<p id="totalDonations">0</p>
+</div>
+
+</div>
+
+<h2>Blood Group Statistics</h2>
+
+<canvas id="bloodChart"></canvas>
+
+<h2>Recent Donors</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Blood</th>
+<th>Location</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="donorTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+// SECURITY CHECK
+if(!localStorage.getItem("adminLoggedIn")){
+alert("Admin login required");
+window.location.href="admin-login.html";
+}
+
+// LOGOUT
+function logout(){
+
+localStorage.removeItem("adminLoggedIn");
+
+window.location.href="admin-login.html";
+
+}
+
+// LOAD DASHBOARD
+async function loadDashboard(){
+
+// TOTAL DONORS
+const res1 = await fetch("http://127.0.0.1:5000/total-donors");
+const donors = await res1.json();
+document.getElementById("totalDonors").innerText = donors.total;
+
+
+// TOTAL REQUESTS
+const res2 = await fetch("http://127.0.0.1:5000/total-requests");
+const requests = await res2.json();
+document.getElementById("totalRequests").innerText = requests.total;
+
+
+// TOTAL VOLUNTEERS
+const res3 = await fetch("http://127.0.0.1:5000/total-volunteers");
+const volunteers = await res3.json();
+document.getElementById("totalVolunteers").innerText = volunteers.total;
+
+
+// TOTAL DONATIONS
+const res4 = await fetch("http://127.0.0.1:5000/total-donations");
+const donations = await res4.json();
+document.getElementById("totalDonations").innerText = donations.total;
+
+
+// RECENT DONORS
+const res5 = await fetch("http://127.0.0.1:5000/donors");
+const data = await res5.json();
+
+const table = document.getElementById("donorTable");
+
+table.innerHTML="";
+
+data.slice(-5).reverse().forEach(donor=>{
+
+const row=document.createElement("tr");
+
+row.innerHTML=`
+<td>${donor.name}</td>
+<td>${donor.blood}</td>
+<td>${donor.location}</td>
+<td>Active</td>
+`;
+
+table.appendChild(row);
+
+});
+
+}
+
+loadDashboard();
+
+
+// BLOOD CHART
+async function loadBloodStats(){
+
+const res = await fetch("http://127.0.0.1:5000/blood-stats");
+
+const data = await res.json();
+
+const labels = data.map(item=>item._id);
+const values = data.map(item=>item.count);
+
+const ctx = document.getElementById("bloodChart");
+
+new Chart(ctx,{
+
+type:"bar",
+
+data:{
+labels:labels,
+datasets:[{
+label:"Donors",
+data:values,
+backgroundColor:[
+"#4e79a7",
+"#59a14f",
+"#76b7b2",
+"#9c755f",
+"#bab0ab"
+]
+}]
+}
+
+});
+
+}
+
+loadBloodStats();
+
+</script>
+
+</body>
+</html>

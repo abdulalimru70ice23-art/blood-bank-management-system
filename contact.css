@@ -1,0 +1,245 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#fff5f5,#f4f9ff);
+}
+
+/* NAVBAR */
+
+.navbar{
+
+background:#c1121f;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:15px 60px;
+
+color:white;
+
+}
+
+.logo{
+font-size:20px;
+font-weight:600;
+}
+
+.nav-links{
+display:flex;
+gap:30px;
+list-style:none;
+}
+
+.nav-links a{
+text-decoration:none;
+color:white;
+transition:0.3s;
+}
+
+.nav-links a:hover{
+color:#ffd6d6;
+}
+
+/* HERO */
+
+.hero{
+
+text-align:center;
+padding:80px 20px;
+
+}
+
+.hero h1{
+
+font-size:38px;
+color:#c1121f;
+margin-bottom:10px;
+
+}
+
+.hero p{
+
+color:#555;
+
+}
+
+/* CONTACT SECTION */
+
+.contact-container{
+
+max-width:1000px;
+margin:auto;
+
+display:flex;
+gap:40px;
+
+padding:60px 20px;
+
+flex-wrap:wrap;
+
+}
+
+/* CONTACT INFO */
+
+.contact-info{
+
+flex:1;
+
+}
+
+.contact-info h2{
+
+margin-bottom:15px;
+color:#c1121f;
+
+}
+
+.contact-info p{
+
+margin-bottom:10px;
+color:#555;
+
+}
+
+/* CONTACT FORM */
+
+.contact-form{
+
+flex:1;
+
+background:white;
+
+padding:30px;
+
+border-radius:12px;
+
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+
+}
+
+.contact-form h2{
+
+margin-bottom:20px;
+
+}
+
+input, textarea{
+
+width:100%;
+
+padding:12px;
+
+margin-bottom:15px;
+
+border-radius:8px;
+
+border:1px solid #ddd;
+
+}
+
+button{
+
+background:#c1121f;
+
+color:white;
+
+padding:12px;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-size:15px;
+
+transition:0.3s;
+
+}
+
+button:hover{
+
+background:#a10f19;
+
+}
+
+/* FOOTER */
+
+footer{
+
+background:#222;
+
+color:white;
+
+text-align:center;
+
+padding:20px;
+
+margin-top:40px;
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.navbar{
+flex-direction:column;
+gap:10px;
+}
+
+.contact-container{
+flex-direction:column;
+}
+
+.hero h1{
+font-size:30px;
+}
+
+}
+
+/* Existing CSS above */
+
+/* ========================= */
+/* Mobile Responsive Fix */
+/* ========================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+.container{
+width:90%;
+max-width:1200px;
+margin:auto;
+}
+
+@media (max-width:768px){
+
+.hero{
+flex-direction:column;
+text-align:center;
+}
+
+.navbar{
+flex-direction:column;
+}
+
+.menu{
+display:block;
+}
+
+.buttons{
+flex-direction:column;
+gap:10px;
+}
+
+}
