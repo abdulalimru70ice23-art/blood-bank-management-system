@@ -4,7 +4,9 @@ const cors = require("cors");
 
 const Donor = require("./models/Donor");
 const User = require("./models/User");
-const Request = require("./models/Request"); // NEW
+const Request = require("./models/Request");
+const Volunteer = require("./models/Volunteer");
+const Donation = require("./models/Donation");
 
 const app = express();
 
@@ -17,77 +19,73 @@ app.use(express.json());
 // ==============================
 
 mongoose.connect("mongodb://127.0.0.1:27017/lifeShare")
-    .then(() => console.log("MongoDB Connected"));
+.then(()=> console.log("MongoDB Connected"))
+.catch(err=>console.log(err));
 
 
 // ==============================
 // ADD DONOR
 // ==============================
 
-app.post("/add-donor", async (req, res) => {
+app.post("/add-donor", async (req,res)=>{
 
-    try {
+try{
 
-        const donor = new Donor(req.body);
+const donor = new Donor(req.body);
+await donor.save();
 
-        await donor.save();
+res.send("Donor Added Successfully");
 
-        res.send("Donor Added Successfully");
+}catch(err){
 
-    }
+console.log(err);
+res.send("Error saving donor");
 
-    catch (err) {
-
-        console.log(err);
-        res.send("Error saving donor");
-
-    }
+}
 
 });
 
 
 // ==============================
-// GET ALL DONORS
+// GET DONORS
 // ==============================
 
-app.get("/donors", async (req, res) => {
+app.get("/donors", async (req,res)=>{
 
-    const donors = await Donor.find();
-
-    res.json(donors);
+const donors = await Donor.find();
+res.json(donors);
 
 });
 
 
 // ==============================
-// TOTAL DONOR COUNT
+// TOTAL DONORS
 // ==============================
 
-app.get("/total-donors", async (req, res) => {
+app.get("/total-donors", async (req,res)=>{
 
-    const total = await Donor.countDocuments();
-
-    res.json({ total });
+const total = await Donor.countDocuments();
+res.json({total});
 
 });
 
 
 // ==============================
-// BLOOD GROUP STATISTICS
+// BLOOD GROUP STATS
 // ==============================
 
-app.get("/blood-stats", async (req, res) => {
+app.get("/blood-stats", async (req,res)=>{
 
-    const stats = await Donor.aggregate([
-        {
-            $group: {
-                _id: "$blood",
-                count: { $sum: 1 }
-            }
-        }
-    ]);
+const stats = await Donor.aggregate([
+{
+$group:{
+_id:"$blood",
+count:{ $sum:1 }
+}
+}
+]);
 
-    res.json(stats);
+res.json(stats);
 
 });
 
@@ -96,11 +94,11 @@ app.get("/blood-stats", async (req, res) => {
 // DELETE DONOR
 // ==============================
 
-app.delete("/delete-donor/:id", async (req, res) => {
+app.delete("/delete-donor/:id", async (req,res)=>{
 
-    await Donor.findByIdAndDelete(req.params.id);
+await Donor.findByIdAndDelete(req.params.id);
 
-    res.send("Donor Deleted Successfully");
+res.send("Donor Deleted");
 
 });
 
@@ -109,36 +107,36 @@ app.delete("/delete-donor/:id", async (req, res) => {
 // USER SIGNUP
 // ==============================
 
-app.post("/signup", async (req, res) => {
+app.post("/signup", async (req,res)=>{
 
-    const user = new User(req.body);
+const user = new User(req.body);
 
-    await user.save();
+await user.save();
 
-    res.send("User Registered");
+res.send("User Registered");
 
 });
 
 
 // ==============================
-// LOGIN USER
+// LOGIN
 // ==============================
 
-app.post("/login", async (req, res) => {
+app.post("/login", async (req,res)=>{
 
-    const { phone, password } = req.body;
+const { phone, password } = req.body;
 
-    const user = await User.findOne({ phone: phone });
+const user = await User.findOne({ phone });
 
-    if (!user) {
-        return res.send("User not found");
-    }
+if(!user){
+return res.send("User not found");
+}
 
-    if (user.password !== password) {
-        return res.send("Wrong password");
-    }
+if(user.password !== password){
+return res.send("Wrong password");
+}
 
-    res.send("Login Successful");
+res.send("Login Successful");
 
 });
 
@@ -147,103 +145,26 @@ app.post("/login", async (req, res) => {
 // ADD BLOOD REQUEST
 // ==============================
 
-app.post("/add-request", async (req, res) => {
+app.post("/add-request", async(req,res)=>{
 
-    try {
+const request = new Request(req.body);
 
-        const request = new Request(req.body);
+await request.save();
 
-        await request.save();
-
-        res.send("Blood request submitted successfully");
-
-    }
-
-    catch (err) {
-
-        console.log(err);
-        res.send("Error submitting request");
-
-    }
+res.send("Blood request submitted");
 
 });
 
 
 // ==============================
-// TOTAL REQUEST COUNT
+// GET REQUESTS
 // ==============================
 
-app.get("/total-requests", async (req, res) => {
+app.get("/requests", async(req,res)=>{
 
-    const total = await Request.countDocuments();
+const requests = await Request.find();
 
-    res.json({ total });
-
-});
-
-
-// ==============================
-// TOTAL VOLUNTEERS
-// ==============================
-
-app.get("/total-volunteers", (req, res) => {
-    res.json({ total: 0 });
-});
-
-
-// ==============================
-// TOTAL DONATIONS
-// ==============================
-
-app.get("/total-donations", (req, res) => {
-    res.json({ total: 0 });
-});
-
-
-// ==============================
-// SERVER START
-// ==============================
-
-app.listen(5000, () => {
-    console.log("LifeShare Backend Server Running");
-});
-
-
-// GET ALL REQUESTS
-
-app.get("/requests", async (req, res) => {
-
-    const requests = await Request.find();
-
-    res.json(requests);
-
-});
-
-
-
-// ADD REQUEST
-// ==============================
-
-app.post("/add-request", async (req, res) => {
-
-    const request = new Request(req.body)
-
-    await request.save()
-
-    res.send("Blood request submitted")
-
-})
-
-
-// ==============================
-// GET ALL REQUESTS
-// ==============================
-
-app.get("/requests", async (req, res) => {
-
-    const requests = await Request.find();
-
-    res.json(requests);
+res.json(requests);
 
 });
 
@@ -252,13 +173,13 @@ app.get("/requests", async (req, res) => {
 // APPROVE REQUEST
 // ==============================
 
-app.put("/approve-request/:id", async (req, res) => {
+app.put("/approve-request/:id", async (req,res)=>{
 
-    await Request.findByIdAndUpdate(req.params.id, {
-        status: "Approved"
-    });
+await Request.findByIdAndUpdate(req.params.id,{
+status:"Approved"
+});
 
-    res.send("Request Approved");
+res.send("Request Approved");
 
 });
 
@@ -267,10 +188,368 @@ app.put("/approve-request/:id", async (req, res) => {
 // DELETE REQUEST
 // ==============================
 
-app.delete("/delete-request/:id", async (req, res) => {
+app.delete("/delete-request/:id", async (req,res)=>{
 
-    await Request.findByIdAndDelete(req.params.id);
+await Request.findByIdAndDelete(req.params.id);
 
-    res.send("Request Deleted");
+res.send("Request Deleted");
 
 });
+
+
+// ==============================
+// TOTAL REQUESTS
+// ==============================
+
+app.get("/total-requests", async(req,res)=>{
+
+const total = await Request.countDocuments();
+
+res.json({total});
+
+});
+
+
+// ==============================
+// ADD VOLUNTEER
+// ==============================
+
+app.post("/add-volunteer", async(req,res)=>{
+
+const volunteer = new Volunteer(req.body);
+
+await volunteer.save();
+
+res.send("Volunteer added");
+
+});
+
+
+// ==============================
+// TOTAL VOLUNTEERS
+// ==============================
+
+app.get("/total-volunteers", async(req,res)=>{
+
+const total = await Volunteer.countDocuments();
+
+res.json({total});
+
+});
+
+
+// ==============================
+// ADD DONATION
+// ==============================
+
+app.post("/add-donation", async(req,res)=>{
+
+const donation = new Donation(req.body);
+
+await donation.save();
+
+res.send("Donation recorded");
+
+});
+
+
+// ==============================
+// TOTAL DONATIONS
+// ==============================
+
+app.get("/total-donations", async(req,res)=>{
+
+const total = await Donation.countDocuments();
+
+res.json({total});
+
+});
+
+
+// ==============================
+// SERVER START
+// ==============================
+
+app.listen(5000, ()=>{
+
+console.log("LifeShare Backend Server Running");
+
+});
+
+
+
+
+
+// ==============================
+// GET ALL VOLUNTEERS
+// ==============================
+
+app.get("/volunteers", async (req,res)=>{
+
+const volunteers = await Volunteer.find()
+
+res.json(volunteers)
+
+})
+
+
+// ==============================
+// APPROVE VOLUNTEER
+// ==============================
+
+app.put("/approve-volunteer/:id", async (req,res)=>{
+
+await Volunteer.findByIdAndUpdate(req.params.id,{
+status:"Approved"
+})
+
+res.send("Volunteer Approved")
+
+})
+
+
+// ==============================
+// DELETE VOLUNTEER
+// ==============================
+
+app.delete("/delete-volunteer/:id", async (req,res)=>{
+
+await Volunteer.findByIdAndDelete(req.params.id)
+
+res.send("Volunteer Deleted")
+
+})
+
+
+
+// APPROVED REQUESTS COUNT
+app.get("/approved-requests", async (req, res) => {
+
+const total = await Request.countDocuments({ status: "Approved" })
+
+res.json({ total })
+
+})
+
+
+
+// ==============================
+// TOP CITIES WITH DONORS
+// ==============================
+
+app.get("/top-cities", async(req,res)=>{
+
+const cities = await Donor.aggregate([
+{
+$group:{
+_id:"$location",
+count:{ $sum:1 }
+}
+},
+{ $sort:{ count:-1 } },
+{ $limit:5 }
+])
+
+res.json(cities)
+
+})
+
+
+
+
+// ================================
+// REQUEST STATUS REPORT
+// ================================
+
+app.get("/request-status", async (req, res) => {
+
+try{
+
+const pending = await Request.countDocuments({status:"Pending"})
+const approved = await Request.countDocuments({status:"Approved"})
+
+res.json({
+pending: pending,
+approved: approved
+})
+
+}catch(err){
+res.status(500).json({error:err.message})
+}
+
+})
+
+// GET ALL REQUESTS
+
+app.get("/requests", async (req,res)=>{
+
+const requests = await Request.find()
+
+res.json(requests)
+
+})
+
+
+
+
+
+
+
+
+// ==============================
+// GET REQUESTS
+// ==============================
+
+app.get("/requests", async(req,res)=>{
+
+const requests = await Request.find()
+res.json(requests)
+
+})
+
+
+// ==============================
+// APPROVE REQUEST
+// ==============================
+
+app.put("/approve-request/:id", async (req,res)=>{
+
+await Request.findByIdAndUpdate(req.params.id,{
+status:"Approved"
+})
+
+res.json({message:"Request Approved"})
+
+})
+
+
+// ==============================
+// DELETE REQUEST
+// ==============================
+
+app.delete("/delete-request/:id", async (req,res)=>{
+
+await Request.findByIdAndDelete(req.params.id)
+
+res.json({message:"Request Deleted"})
+
+})
+
+
+// ==============================
+// APPROVED REQUESTS COUNT
+// ==============================
+
+app.get("/approved-requests", async(req,res)=>{
+
+const total = await Request.countDocuments({status:"Approved"})
+
+res.json({total})
+
+})
+
+
+
+
+
+
+
+
+// ==============================
+// USER PROFILE API
+// ==============================
+// ================= USER PROFILE =================
+
+app.get("/user-profile", async (req,res)=>{
+
+try{
+
+const user = await User.findOne().sort({_id:-1})
+
+if(!user){
+return res.json({
+name:"User",
+blood:"Not set",
+phone:"Not set",
+location:"Not set",
+lastDonation:"Not set",
+available:true
+})
+}
+
+res.json(user)
+
+}catch(err){
+
+res.status(500).send("Server Error")
+
+}
+
+})
+
+
+// ================= UPDATE PROFILE =================
+
+app.put("/update-profile", async (req,res)=>{
+
+try{
+
+const {name,blood,phone,location,lastDonation,available} = req.body
+
+await User.findOneAndUpdate(
+{phone:phone},
+{
+name,
+blood,
+location,
+lastDonation,
+available
+}
+)
+
+res.send("Profile Updated")
+
+}catch(err){
+
+res.status(500).send("Server Error")
+
+}
+
+})
+
+
+// ================= CHANGE PASSWORD =================
+
+app.put("/change-password", async (req,res)=>{
+
+try{
+
+const {phone,oldPassword,newPassword} = req.body
+
+const user = await User.findOne({phone})
+
+if(!user){
+
+return res.send("User not found")
+
+}
+
+if(user.password !== oldPassword){
+
+return res.send("Wrong password")
+
+}
+
+user.password = newPassword
+
+await user.save()
+
+res.send("Password Updated")
+
+}catch(err){
+
+res.status(500).send("Server Error")
+
+}
+
+})
