@@ -16,7 +16,7 @@
 
 <body>
 
-<a href="index.html" class="back-btn">← Back to Home</a>
+<a href="Home.html" class="back-btn">← Back to Home</a>
 
 <h1 class="page-title">Create your account</h1>
 
@@ -104,17 +104,33 @@
 
 <script>
 
+// =======================================
+// USER SIGNUP FORM SUBMIT
+// =======================================
+
 document.getElementById("signupForm").addEventListener("submit", async function(e){
 
 e.preventDefault();
+
+
+// =======================================
+// PASSWORD MATCH CHECK
+// =======================================
 
 const password = document.getElementById("password").value;
 const confirmPassword = document.getElementById("confirmPassword").value;
 
 if(password !== confirmPassword){
-alert("Passwords do not match");
+
+alert("Passwords do not match ❌");
 return;
+
 }
+
+
+// =======================================
+// USER DATA OBJECT
+// =======================================
 
 const user = {
 
@@ -125,6 +141,11 @@ location: document.getElementById("location").value,
 password: password
 
 };
+
+
+// =======================================
+// SEND DATA TO SERVER (NODE + MONGODB)
+// =======================================
 
 const res = await fetch("http://127.0.0.1:5000/signup",{
 
@@ -140,14 +161,39 @@ body: JSON.stringify(user)
 
 const data = await res.text();
 
+
+// =======================================
+// SUCCESS MESSAGE + LOGIN OPTION
+// =======================================
+
+if(data === "User Registered"){
+
+const goLogin = confirm(
+"Registration Successful ✅\n\nDo you want to login now?"
+);
+
+if(goLogin){
+
+// redirect to login page
+window.location.href = "login.html";
+
+}else{
+
+// stay on same page
+document.getElementById("signupForm").reset();
+
+}
+
+}
+else{
+
 alert(data);
 
-document.getElementById("signupForm").reset();
+}
 
 });
 
 </script>
-
 
 </body>
 </html>

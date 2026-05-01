@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>User Dashboard - LifeShare</title>
+
+<style>
+
+/* ===== BODY ===== */
+
+body{
+font-family:Poppins;
+margin:0;
+background:url("Images/report-bg.png") center/cover fixed;
+}
+
+/* ===== DASHBOARD LAYOUT ===== */
+
+.dashboard{
+display:flex;
+gap:40px;
+padding:60px;
+justify-content:center;
+}
+
+/* ===== PROFILE CARD ===== */
+
+.profile-card{
+background:rgba(255,255,255,0.9);
+padding:35px;
+border-radius:16px;
+width:300px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.avatar{
+font-size:55px;
+margin-bottom:10px;
+}
+
+.profile-card p{
+margin:6px 0;
+}
+
+/* ===== BUTTONS ===== */
+
+.profile-buttons{
+margin-top:15px;
+}
+
+.edit-btn{
+background:#16a085;
+border:none;
+color:white;
+padding:10px 14px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.logout-btn{
+background:#e74c3c;
+color:white;
+padding:10px 14px;
+border-radius:8px;
+text-decoration:none;
+margin-left:8px;
+}
+
+/* ===== RIGHT DASHBOARD ===== */
+
+.dashboard-right{
+background:rgba(255,255,255,0.9);
+padding:30px;
+border-radius:16px;
+width:650px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* ===== TABLE ===== */
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid #ddd;
+text-align:center;
+}
+
+th{
+background:#ff5c5c;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<!-- ================= PROFILE ================= -->
+
+<div class="profile-card">
+
+<div class="avatar">👤</div>
+
+<h2 id="userName">Loading...</h2>
+
+<p><b>Blood Group:</b> <span id="blood">Loading...</span></p>
+<p><b>Phone:</b> <span id="phone">Loading...</span></p>
+<p><b>Location:</b> <span id="location">Loading...</span></p>
+
+<div class="profile-buttons">
+
+<button class="edit-btn" onclick="editProfile()">Edit</button>
+
+<a href="login.html" class="logout-btn">Logout</a>
+
+</div>
+
+</div>
+
+<!-- ================= USER REQUESTS ================= -->
+
+<div class="dashboard-right">
+
+<h2>My Blood Requests</h2>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Hospital</th>
+<th>Blood</th>
+<th>Status</th>
+<th>Date</th>
+</tr>
+
+</thead>
+
+<tbody id="requestTable">
+
+<tr>
+<td colspan="4">Loading...</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<script>
+
+// ===============================
+// LOAD USER PROFILE
+// ===============================
+
+fetch("http://127.0.0.1:5000/user-profile")
+
+.then(res => res.json())
+
+.then(user => {
+
+// PROFILE DATA
+document.getElementById("userName").innerText = user.name
+document.getElementById("phone").innerText = user.phone
+document.getElementById("blood").innerText = user.blood || "Not set"
+document.getElementById("location").innerText = user.location || "Not set"
+
+
+// ===============================
+// LOAD USER REQUESTS
+// ===============================
+
+fetch(`http://127.0.0.1:5000/my-requests/${user.phone}`)
+
+.then(res => res.json())
+
+.then(data => {
+
+const table = document.getElementById("requestTable")
+
+table.innerHTML = ""
+
+if(data.length === 0){
+
+table.innerHTML = `<tr><td colspan="4">No Requests Yet</td></tr>`
+return
+
+}
+
+data.forEach(r => {
+
+const row = document.createElement("tr")
+
+row.innerHTML = `
+<td>${r.location}</td>
+<td>${r.blood}</td>
+<td>${r.status}</td>
+<td>${new Date(r.date).toLocaleDateString()}</td>
+`
+
+table.appendChild(row)
+
+})
+
+})
+
+})
+
+
+// ===============================
+// EDIT PROFILE BUTTON
+// ===============================
+
+function editProfile(){
+
+alert("Edit profile feature will be added")
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,3 +1,7 @@
+/* =================================
+GLOBAL RESET
+================================= */
+
 *{
 margin:0;
 padding:0;
@@ -5,67 +9,121 @@ box-sizing:border-box;
 font-family:'Poppins',sans-serif;
 }
 
-body{
 
-background:#c9c7b2;
+/* =================================
+BODY WITH FIXED BACKGROUND
+================================= */
+
+body{
 
 min-height:100vh;
 
 padding:40px;
 
+background-image:url("Images/blood-bg3.jpg");
+
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+
+background-attachment:fixed;
+
 }
+
+
+/* =================================
+BACK BUTTON
+================================= */
 
 .back-btn{
 
+position:absolute;
+
+top:40px;
+left:40px;
+
 text-decoration:none;
 
-color:rgb(0, 0, 0);
+color:white;
 
-font-size:22px;
+font-size:18px;
 
-margin-bottom:20px;
+background:rgba(0,0,0,0.5);
 
-display:inline-block;
+padding:10px 18px;
+
+border-radius:8px;
 
 transition:0.3s;
+
+backdrop-filter:blur(6px);
 
 }
 
 .back-btn:hover{
 
-color:#ff4b5c;
+background:#e63946;
 
 }
+
+
+/* =================================
+PAGE TITLE
+================================= */
 
 .page-title{
 
 text-align:center;
 
-background:#dcdcdc;
+background:rgba(255,255,255,0.9);
 
-padding:20px;
+padding:20px 30px;
 
-width:350px;
+width:320px;
 
-margin:0 auto 30px;
+margin:40px auto;
 
-border-radius:30px;
+border-radius:20px;
 
-box-shadow:0 6px 10px rgba(0,0,0,0.3);
+box-shadow:0 10px 30px rgba(0,0,0,0.25);
+
+backdrop-filter:blur(10px);
+
+color:#111;
 
 }
+
+
+/* =================================
+REGISTER CONTAINER (GLASS EFFECT)
+================================= */
 
 .register-container{
 
-background:#cfcfcf;
+background:rgba(255,255,255,0.25);
 
-border-radius:30px;
+backdrop-filter:blur(20px);
 
-padding:40px;
+border-radius:25px;
 
-box-shadow:0 10px 20px rgba(0,0,0,0.3);
+padding:50px;
+
+box-shadow:0 15px 40px rgba(0,0,0,0.35);
+
+width:90%;
+
+max-width:1100px;
+
+margin:auto;
+
+border:1px solid rgba(255,255,255,0.4);
 
 }
+
+
+/* =================================
+FORM LAYOUT
+================================= */
 
 .register-form{
 
@@ -90,18 +148,32 @@ gap:15px;
 
 }
 
+
+/* =================================
+LABEL TEXT FIX
+================================= */
+
 label{
 
 font-size:14px;
 
+font-weight:600;
+
+color:#111;
+
 }
+
+
+/* =================================
+INPUT DESIGN
+================================= */
 
 input,
 select{
 
 padding:14px;
 
-border-radius:30px;
+border-radius:25px;
 
 border:none;
 
@@ -109,11 +181,43 @@ outline:none;
 
 font-size:14px;
 
+background:rgba(255,255,255,0.95);
+
+transition:0.3s;
+
+color:#222;
+
 }
+
+input::placeholder{
+
+color:#666;
+
+}
+
+input:focus,
+select:focus{
+
+box-shadow:0 0 8px rgba(255,0,0,0.5);
+
+}
+
+
+/* =================================
+NID SECTION
+================================= */
 
 .nid-section{
 
 margin-top:10px;
+
+}
+
+.nid-section h3{
+
+color:#111;
+
+font-weight:600;
 
 }
 
@@ -129,15 +233,17 @@ margin-top:10px;
 
 .upload{
 
-background:white;
+background:rgba(255,255,255,0.9);
 
 padding:20px;
 
-border-radius:10px;
+border-radius:12px;
 
 text-align:center;
 
 flex:1;
+
+border:1px dashed #ccc;
 
 }
 
@@ -147,6 +253,11 @@ margin-top:10px;
 
 }
 
+
+/* =================================
+SUBMIT BUTTON
+================================= */
+
 .submit-area{
 
 width:100%;
@@ -155,19 +266,19 @@ display:flex;
 
 justify-content:center;
 
-margin-top:20px;
+margin-top:30px;
 
 }
 
 .submit-area button{
 
-background:#8e44ad;
+background:#e63946;
 
 color:white;
 
 border:none;
 
-padding:15px 40px;
+padding:15px 45px;
 
 border-radius:30px;
 
@@ -177,13 +288,61 @@ cursor:pointer;
 
 transition:0.3s;
 
+box-shadow:0 5px 20px rgba(0,0,0,0.3);
+
 }
 
 .submit-area button:hover{
 
-background:#6c3483;
+background:#c1121f;
+
+transform:translateY(-2px);
 
 }
+
+
+/* =================================
+LOGIN OPTION
+================================= */
+
+.login-option{
+
+text-align:center;
+
+margin-top:30px;
+
+font-size:18px;
+
+color:#222;
+
+}
+
+.login-option a{
+
+color:#e63946;
+
+font-weight:700;
+
+margin-left:10px;
+
+text-decoration:none;
+
+transition:0.3s;
+
+}
+
+.login-option a:hover{
+
+color:#ff0000;
+
+text-decoration:underline;
+
+}
+
+
+/* =================================
+RESPONSIVE
+================================= */
 
 @media(max-width:900px){
 
@@ -197,76 +356,6 @@ flex-direction:column;
 
 flex-direction:column;
 
-}
-
-}
-
-
-.login-option{
-
-text-align:center;
-
-margin-top:25px;
-
-font-size:18px;
-
-}
-
-.login-option a{
-
-color:#8e44ad;
-
-font-weight:600;
-
-margin-left:10px;
-
-text-decoration:none;
-
-}
-
-.login-option a:hover{
-
-text-decoration:underline;
-
-}
-
-
-/* Existing CSS above */
-
-/* ========================= */
-/* Mobile Responsive Fix */
-/* ========================= */
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-.container{
-width:90%;
-max-width:1200px;
-margin:auto;
-}
-
-@media (max-width:768px){
-
-.hero{
-flex-direction:column;
-text-align:center;
-}
-
-.navbar{
-flex-direction:column;
-}
-
-.menu{
-display:block;
-}
-
-.buttons{
-flex-direction:column;
-gap:10px;
 }
 
 }

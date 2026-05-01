@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Settings - LifeShare</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins, Arial;
+}
+
+body{
+display:flex;
+background:#f4f7f9;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+
+width:230px;
+height:100vh;
+
+background:#243b55;
+
+color:white;
+
+padding:25px;
+
+position:fixed;
+
+}
+
+.sidebar h2{
+
+margin-bottom:40px;
+
+}
+
+.sidebar ul{
+
+list-style:none;
+
+}
+
+.sidebar ul li{
+
+padding:12px;
+margin-bottom:12px;
+
+border-radius:6px;
+
+cursor:pointer;
+
+transition:0.3s;
+
+}
+
+.sidebar ul li:hover{
+
+background:#3b5998;
+
+}
+
+/* ================= MAIN CONTENT ================= */
+
+.main{
+
+margin-left:230px;
+
+padding:40px;
+
+width:100%;
+
+}
+
+.main h1{
+
+margin-bottom:25px;
+
+}
+
+/* ================= SETTINGS CARD ================= */
+
+.settings-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+
+gap:25px;
+
+}
+
+.card{
+
+background:white;
+
+padding:25px;
+
+border-radius:12px;
+
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+
+transition:0.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
+
+}
+
+/* ================= INPUT ================= */
+
+.card input{
+
+width:100%;
+
+padding:10px;
+
+margin:10px 0;
+
+border:1px solid #ccc;
+
+border-radius:6px;
+
+}
+
+/* ================= BUTTON ================= */
+
+.card button{
+
+background:#0f7c82;
+
+color:white;
+
+border:none;
+
+padding:10px 16px;
+
+border-radius:6px;
+
+cursor:pointer;
+
+transition:0.3s;
+
+}
+
+.card button:hover{
+
+background:#0c656a;
+
+}
+
+/* ================= INFO ================= */
+
+.info p{
+
+margin:8px 0;
+
+color:#555;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>🩸 LifeShare</h2>
+
+<ul>
+
+<li onclick="go('admin-dashboard.html')">Dashboard</li>
+<li onclick="go('admin-donors.html')">Donor List</li>
+<li onclick="go('admin-requests.html')">Blood Requests</li>
+<li onclick="go('admin-volunteers.html')">Volunteers</li>
+<li onclick="go('admin-reports.html')">Reports</li>
+<li onclick="go('admin-settings.html')">Settings</li>
+<li onclick="logout()">Logout</li>
+
+</ul>
+
+</div>
+
+
+<!-- Main Content -->
+
+<div class="main">
+
+<h1>Admin Settings</h1>
+
+<div class="settings-grid">
+
+<!-- Change Password -->
+
+<div class="card">
+
+<h3>Change Admin Password</h3>
+
+<input type="password" id="oldPass" placeholder="Old Password">
+
+<input type="password" id="newPass" placeholder="New Password">
+
+<button onclick="changePassword()">Update Password</button>
+
+</div>
+
+
+<!-- System Info -->
+
+<div class="card info">
+
+<h3>System Information</h3>
+
+<p><b>System:</b> LifeShare Blood Bank</p>
+<p><b>Version:</b> 1.0</p>
+<p><b>Backend:</b> Node.js</p>
+<p><b>Database:</b> MongoDB</p>
+<p><b>University:</b> University of Rajshahi</p>
+
+</div>
+
+
+<!-- Danger Zone -->
+
+<div class="card">
+
+<h3>Danger Zone</h3>
+
+<p>Reset all data in system.</p>
+
+<button onclick="resetSystem()">Reset System</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+function go(page){
+
+window.location.href=page;
+
+}
+
+function logout(){
+
+localStorage.removeItem("adminLoggedIn");
+
+window.location.href="admin-login.html";
+
+}
+
+function changePassword(){
+
+let oldPass=document.getElementById("oldPass").value;
+
+let newPass=document.getElementById("newPass").value;
+
+if(oldPass==="12345"){
+
+alert("Password updated successfully!");
+
+}else{
+
+alert("Old password incorrect!");
+
+}
+
+}
+
+function resetSystem(){
+
+if(confirm("Are you sure to reset system?")){
+
+alert("System reset feature disabled.");
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>

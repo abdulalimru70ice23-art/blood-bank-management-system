@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LifeShare - Welcome</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<nav class="navbar">
+
+<div class="logo">🩸 LifeShare</div>
+
+<div class="menu-toggle">☰</div>
+
+<ul class="nav-links">
+
+<li><a href="Home.html">Home</a></li>
+
+<li><a onclick="showLoginMessage()">About</a></li>
+<li><a onclick="showLoginMessage()">Contact</a></li>
+
+<li><a href="login.html">Login</a></li>
+
+
+<li><a href="register.html" class="signup-btn">Sign Up</a></li>
+
+</ul>
+
+</nav>
+
+
+<!-- Hero Section -->
+
+<section class="hero">
+
+<video autoplay muted loop playsinline class="hero-video">
+<source src="Videos/blood-donation.mp4" type="video/mp4">
+</video>
+
+<div class="hero-content">
+
+<h1>Donate Blood, Save Lives</h1>
+
+<p>Your blood can save someone's life today.</p>
+
+<div class="hero-buttons">
+
+<a href="#" onclick="showLoginMessage(); return false;" class="btn">Find Donor</a>
+<a href="#" onclick="showLoginMessage(); return false;" class="btn-outline">Request Blood</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- Why Donate Blood -->
+
+<section class="why">
+
+<h2>Why Donate Blood?</h2>
+
+<div class="why-container">
+
+<div class="why-card">
+<h3>❤️ Save Lives</h3>
+<p>One blood donation can save up to three lives.</p>
+</div>
+
+<div class="why-card">
+<h3>🩸 Help Community</h3>
+<p>Your donation helps hospitals and patients.</p>
+</div>
+
+<div class="why-card">
+<h3>🤝 Become a Hero</h3>
+<p>Be someone's hero by donating blood today.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- Footer -->
+
+<footer>
+
+<p>© 2026 LifeShare Blood Bank Management System</p>
+
+</footer>
+
+<script>
+
+// ======================================
+// Show message for restricted features
+// If user not logged in, ask them to login
+// ======================================
+
+function showLoginMessage(){
+
+let goLogin = confirm("You must Sign Up or Login first to use this feature.\n\nPress OK to go to Login page or Cancel to stay here.");
+
+if(goLogin){
+
+// user chose OK → go to login page
+window.location.href = "login.html";
+
+}
+
+// user pressed Cancel → stay on same page
+
+}
+
+</script>
+
+
+</body>
+
+</html>

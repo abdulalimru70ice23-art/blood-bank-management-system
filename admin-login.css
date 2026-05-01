@@ -5,6 +5,8 @@ box-sizing:border-box;
 font-family:'Poppins',sans-serif;
 }
 
+/* ================= BODY ================= */
+
 body{
 
 height:100vh;
@@ -14,8 +16,8 @@ justify-content:center;
 align-items:center;
 
 background:linear-gradient(
-rgba(0,0,0,0.4),
-rgba(0,0,0,0.4)
+rgba(0,0,0,0.45),
+rgba(0,0,0,0.45)
 ),
 
 url("https://images.unsplash.com/photo-1615461066841-6116e61058f4")
@@ -23,22 +25,35 @@ center/cover no-repeat;
 
 }
 
-/* back button */
+
+/* ================= BACK BUTTON ================= */
 
 .back-home{
 
 position:absolute;
-top:20px;
-left:20px;
+top:25px;
+left:25px;
 
 color:white;
 text-decoration:none;
-font-size:16px;
+font-size:15px;
 font-weight:500;
+
+padding:6px 12px;
+border-radius:6px;
+
+transition:0.3s;
 
 }
 
-/* wrapper */
+.back-home:hover{
+
+background:rgba(255,255,255,0.15);
+
+}
+
+
+/* ================= WRAPPER ================= */
 
 .login-wrapper{
 
@@ -49,39 +64,54 @@ align-items:center;
 
 }
 
-/* card */
+
+/* ================= CARD ================= */
 
 .admin-card{
 
 width:360px;
 
-background:white;
+background:rgba(255,255,255,0.95);
 
 padding:40px;
 
-border-radius:12px;
+border-radius:14px;
 
 text-align:center;
 
-box-shadow:0 15px 40px rgba(0,0,0,0.3);
+box-shadow:0 20px 45px rgba(0,0,0,0.35);
+
+backdrop-filter:blur(6px);
+
+transition:0.3s;
 
 }
 
-/* logo */
+.admin-card:hover{
+
+transform:translateY(-4px);
+box-shadow:0 25px 55px rgba(0,0,0,0.45);
+
+}
+
+
+/* ================= LOGO ================= */
 
 .logo{
 
-font-size:40px;
+font-size:42px;
 margin-bottom:10px;
 
 }
 
-/* title */
+
+/* ================= TITLES ================= */
 
 .brand{
 
 color:#d10000;
-margin-bottom:5px;
+margin-bottom:6px;
+font-weight:600;
 
 }
 
@@ -96,36 +126,50 @@ margin-bottom:5px;
 
 color:#666;
 font-size:14px;
-margin-bottom:25px;
+margin-bottom:28px;
 
 }
 
-/* inputs */
+
+/* ================= INPUTS ================= */
 
 .input-group{
 
-margin-bottom:15px;
+margin-bottom:16px;
 
 }
 
 .input-group input{
 
 width:100%;
-padding:12px;
+
+padding:12px 14px;
 
 border:1px solid #ddd;
-border-radius:6px;
+border-radius:7px;
 
 font-size:14px;
 
+transition:0.25s;
+
+outline:none;
+
 }
 
-/* options */
+.input-group input:focus{
+
+border-color:#d10000;
+box-shadow:0 0 0 2px rgba(209,0,0,0.1);
+
+}
+
+
+/* ================= OPTIONS ================= */
 
 .options{
 
 text-align:right;
-margin-bottom:20px;
+margin-bottom:22px;
 
 }
 
@@ -135,9 +179,18 @@ font-size:13px;
 text-decoration:none;
 color:#d10000;
 
+transition:0.2s;
+
 }
 
-/* button */
+.options a:hover{
+
+text-decoration:underline;
+
+}
+
+
+/* ================= LOGIN BUTTON ================= */
 
 .login-btn{
 
@@ -151,11 +204,13 @@ border:none;
 
 color:white;
 
-font-size:16px;
+font-size:15px;
 
-border-radius:6px;
+border-radius:7px;
 
 cursor:pointer;
+
+font-weight:500;
 
 transition:0.3s;
 
@@ -165,14 +220,19 @@ transition:0.3s;
 
 background:#a50000;
 
+transform:translateY(-2px);
+
+box-shadow:0 6px 14px rgba(0,0,0,0.2);
+
 }
 
-/* warning */
+
+/* ================= WARNING ================= */
 
 .warning{
 
-margin-top:15px;
+margin-top:18px;
 font-size:12px;
-color:#999;
+color:#777;
 
 }

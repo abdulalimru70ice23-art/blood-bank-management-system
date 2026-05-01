@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Edit Profile - LifeShare</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins', Arial;
+}
+
+body{
+
+height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+background:
+linear-gradient(
+rgba(0,0,0,0.55),
+rgba(0,0,0,0.55)
+),
+url("Images/report-bg0.png")
+center/cover no-repeat;
+
+}
+
+/* Card */
+
+.card{
+
+background:rgba(255,255,255,0.95);
+
+width:400px;
+
+padding:35px;
+
+border-radius:14px;
+
+box-shadow:0 20px 50px rgba(0,0,0,0.35);
+
+text-align:center;
+
+}
+
+/* Title */
+
+h2{
+margin-bottom:20px;
+}
+
+/* Input group */
+
+.input-group{
+
+margin-bottom:15px;
+text-align:left;
+
+}
+
+.input-group label{
+
+font-size:14px;
+font-weight:500;
+display:block;
+margin-bottom:5px;
+
+}
+
+input, select{
+
+width:100%;
+padding:11px;
+
+border-radius:8px;
+
+border:1px solid #ddd;
+
+font-size:14px;
+
+outline:none;
+
+}
+
+input:focus{
+
+border-color:#0f7c82;
+
+}
+
+/* Buttons */
+
+.buttons{
+
+margin-top:20px;
+
+display:flex;
+gap:10px;
+
+justify-content:center;
+
+}
+
+button{
+
+padding:10px 16px;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+.save{
+
+background:#0f7c82;
+color:white;
+
+}
+
+.cancel{
+
+background:#e53935;
+color:white;
+
+}
+
+.password{
+
+background:#444;
+color:white;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Edit Profile</h2>
+
+<div class="input-group">
+<label>Name</label>
+<input type="text" id="name">
+</div>
+
+<div class="input-group">
+<label>Blood Group</label>
+<input type="text" id="blood">
+</div>
+
+<div class="input-group">
+<label>Phone</label>
+<input type="text" id="phone">
+</div>
+
+<div class="input-group">
+<label>Location</label>
+<input type="text" id="location">
+</div>
+
+<div class="input-group">
+<label>Last Donation Date</label>
+<input type="date" id="lastDonation">
+</div>
+
+<div class="input-group">
+<label>Availability</label>
+<select id="available">
+<option value="true">Available</option>
+<option value="false">Not Available</option>
+</select>
+</div>
+
+<div class="buttons">
+
+<button class="save" onclick="saveProfile()">Save</button>
+
+<button class="password" onclick="changePassword()">Change Password</button>
+
+<button class="cancel" onclick="window.location.href='user-profile.html'">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+async function saveProfile(){
+
+const data = {
+
+name: document.getElementById("name").value,
+blood: document.getElementById("blood").value,
+phone: document.getElementById("phone").value,
+location: document.getElementById("location").value,
+lastDonation: document.getElementById("lastDonation").value,
+available: document.getElementById("available").value
+
+};
+
+await fetch("http://127.0.0.1:5000/update-profile",{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body: JSON.stringify(data)
+
+});
+
+alert("Profile Updated");
+
+window.location.href="user-profile.html";
+
+}
+
+/* Change password */
+
+async function changePassword(){
+
+const oldPassword = prompt("Enter old password");
+const newPassword = prompt("Enter new password");
+
+const phone = document.getElementById("phone").value;
+
+await fetch("http://127.0.0.1:5000/change-password",{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body: JSON.stringify({
+phone,
+oldPassword,
+newPassword
+})
+
+});
+
+alert("Password Updated");
+
+}
+
+</script>
+
+</body>
+
+</html>

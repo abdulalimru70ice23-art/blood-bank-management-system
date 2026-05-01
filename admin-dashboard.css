@@ -14,18 +14,26 @@ display:flex;
 .sidebar{
 width:230px;
 height:100vh;
-background:#d10000;
+
+/* Professional dark blue color */
+background:#1f3a5f;
+
 color:white;
 padding:25px;
 position:fixed;
+
+/* soft shadow */
+box-shadow:2px 0 10px rgba(0,0,0,0.1);
 }
 
 .sidebar h2{
 margin-bottom:40px;
+font-weight:600;
 }
 
 .sidebar ul{
 list-style:none;
+padding:0;
 }
 
 .sidebar ul li{
@@ -33,10 +41,16 @@ padding:12px;
 margin-bottom:10px;
 cursor:pointer;
 border-radius:6px;
+
+/* smooth transition */
+transition:0.3s;
 }
 
+/* hover effect */
+
 .sidebar ul li:hover{
-background:#b30000;
+background:rgba(255,255,255,0.12);
+padding-left:18px;
 }
 
 .logout{
@@ -44,7 +58,14 @@ display:block;
 margin-top:40px;
 color:white;
 text-decoration:none;
+opacity:0.9;
 }
+
+.logout:hover{
+opacity:1;
+}
+
+
 
 /* Main */
 
@@ -142,4 +163,20 @@ cursor:pointer;
 
 button:hover{
 background:#c1121f;
+}
+
+
+
+
+.sidebar a{
+display:block;
+padding:12px;
+color:white;
+text-decoration:none;
+}
+
+.sidebar a:hover{
+background:rgba(255,255,255,0.1);
+padding-left:18px;
+transition:0.3s;
 }

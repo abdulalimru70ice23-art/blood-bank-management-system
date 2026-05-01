@@ -455,101 +455,45 @@ res.json({total})
 
 
 
-// ==============================
-// USER PROFILE API
-// ==============================
-// ================= USER PROFILE =================
 
+
+
+
+
+
+
+
+
+// USER PROFILE
 app.get("/user-profile", async (req,res)=>{
-
-try{
-
 const user = await User.findOne().sort({_id:-1})
-
-if(!user){
-return res.json({
-name:"User",
-blood:"Not set",
-phone:"Not set",
-location:"Not set",
-lastDonation:"Not set",
-available:true
-})
-}
-
 res.json(user)
-
-}catch(err){
-
-res.status(500).send("Server Error")
-
-}
-
 })
 
-
-// ================= UPDATE PROFILE =================
-
+// UPDATE PROFILE
 app.put("/update-profile", async (req,res)=>{
-
-try{
-
-const {name,blood,phone,location,lastDonation,available} = req.body
-
+const {name,blood,location,phone}=req.body
 await User.findOneAndUpdate(
 {phone:phone},
-{
-name,
-blood,
-location,
-lastDonation,
-available
-}
+{name,blood,location}
 )
-
 res.send("Profile Updated")
+})
 
-}catch(err){
+// USER REQUESTS
+app.get("/my-requests/:phone", async (req,res)=>{
 
-res.status(500).send("Server Error")
+const phone = req.params.phone
 
-}
+const requests = await Request.find({phone:phone})
+.sort({date:-1})
+
+res.json(requests)
 
 })
 
 
-// ================= CHANGE PASSWORD =================
-
-app.put("/change-password", async (req,res)=>{
-
-try{
-
-const {phone,oldPassword,newPassword} = req.body
-
-const user = await User.findOne({phone})
-
-if(!user){
-
-return res.send("User not found")
-
-}
-
-if(user.password !== oldPassword){
-
-return res.send("Wrong password")
-
-}
-
-user.password = newPassword
-
-await user.save()
-
-res.send("Password Updated")
-
-}catch(err){
-
-res.status(500).send("Server Error")
-
-}
-
+// SERVER START (LAST LINE)
+app.listen(5000, ()=>{
+console.log("LifeShare Backend Server Running")
 })

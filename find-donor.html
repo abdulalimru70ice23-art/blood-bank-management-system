@@ -118,8 +118,9 @@ card.innerHTML = `
 <h3>${donor.name}</h3>
 <p>Blood Group: ${donor.blood}</p>
 <p class="location">Location: ${donor.location}</p>
-<a href="login.html" class="contact-btn">🔐 Login to Contact</a>
-`;
+<a href="request-blood.html?blood=${donor.blood}&location=${donor.location}" class="contact-btn">
+🩸 Request Blood
+</a>`;
 
 list.appendChild(card);
 

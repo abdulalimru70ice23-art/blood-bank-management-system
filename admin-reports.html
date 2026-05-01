@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Admin Reports - LifeShare</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family:Poppins;
+margin:0;
+
+/* Background Image */
+
+background-image:url("Images/report-bg0.png");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+}
+
+/* Soft overlay */
+
+
+
+.container{
+padding:40px;
+max-width:1200px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+margin-bottom:35px;
+color:#2c3e50;
+font-size:34px;
+letter-spacing:1px;
+}
+
+/* CARDS */
+
+.cards{
+display:flex;
+gap:25px;
+margin-bottom:40px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.card{
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(8px);
+padding:25px;
+border-radius:14px;
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+width:220px;
+text-align:center;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+}
+
+.card h2{
+color:#2c3e50;
+margin:0;
+font-size:28px;
+}
+
+/* CHART AREA */
+
+.chart-row{
+display:flex;
+gap:30px;
+flex-wrap:wrap;
+margin-bottom:45px;
+justify-content:center;
+}
+
+.chart-box{
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(8px);
+padding:25px;
+border-radius:14px;
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+width:420px;
+}
+
+/* TABLE AREA */
+
+.table-box{
+background:rgba(255,255,255,0.55);
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,0.4);
+padding:25px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+margin-bottom:35px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eaeaea;
+text-align:left;
+}
+
+th{
+background:#eef2f7;
+color:#2c3e50;
+font-weight:600;
+}
+
+tbody tr:hover{
+background:#f9fbfd;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Admin Reports</h1>
+
+<!-- SUMMARY CARDS -->
+
+<div class="cards">
+
+<div class="card">
+<h2 id="donorCount">0</h2>
+<p>Total Donors</p>
+</div>
+
+<div class="card">
+<h2 id="requestCount">0</h2>
+<p>Total Requests</p>
+</div>
+
+<div class="card">
+<h2 id="volunteerCount">0</h2>
+<p>Total Volunteers</p>
+</div>
+
+<div class="card">
+<h2 id="approvedCount">0</h2>
+<p>Lives Saved</p>
+</div>
+
+</div>
+
+<!-- CHART SECTION -->
+
+<div class="chart-row">
+
+<div class="chart-box">
+<h3>Blood Group Distribution</h3>
+<canvas id="bloodChart"></canvas>
+</div>
+
+<div class="chart-box">
+<h3>Request Status</h3>
+<canvas id="requestChart"></canvas>
+</div>
+
+</div>
+
+<!-- TOP CITIES -->
+
+<div class="table-box">
+
+<h3>Top Cities with Donors</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>City</th>
+<th>Total Donors</th>
+</tr>
+</thead>
+
+<tbody id="cityTable"></tbody>
+
+</table>
+
+</div>
+
+<!-- RECENT VOLUNTEERS -->
+
+<div class="table-box">
+
+<h3>Recent Volunteers</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>City</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="volunteerTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+/* SUMMARY DATA */
+
+fetch("http://127.0.0.1:5000/total-donors")
+.then(res=>res.json())
+.then(data=>{
+document.getElementById("donorCount").innerText=data.total
+})
+
+fetch("http://127.0.0.1:5000/total-requests")
+.then(res=>res.json())
+.then(data=>{
+document.getElementById("requestCount").innerText=data.total
+})
+
+fetch("http://127.0.0.1:5000/total-volunteers")
+.then(res=>res.json())
+.then(data=>{
+document.getElementById("volunteerCount").innerText=data.total
+})
+
+fetch("http://127.0.0.1:5000/approved-requests")
+.then(res=>res.json())
+.then(data=>{
+document.getElementById("approvedCount").innerText=data.total
+})
+
+/* BLOOD GROUP CHART */
+
+fetch("http://127.0.0.1:5000/blood-stats")
+.then(res=>res.json())
+.then(data=>{
+
+const labels=data.map(x=>x._id)
+const values=data.map(x=>x.count)
+
+new Chart(document.getElementById("bloodChart"),{
+
+type:"pie",
+
+data:{
+labels:labels,
+datasets:[{
+data:values,
+backgroundColor:[
+"#3498db",
+"#2ecc71",
+"#f1c40f",
+"#9b59b6",
+"#e67e22",
+"#e74c3c"
+]
+}]
+}
+
+})
+
+})
+
+/* REQUEST STATUS CHART */
+
+fetch("http://127.0.0.1:5000/request-status")
+.then(res=>res.json())
+.then(data=>{
+
+new Chart(document.getElementById("requestChart"),{
+
+type:"bar",
+
+data:{
+labels:["Pending","Approved"],
+datasets:[{
+data:[data.pending,data.approved],
+backgroundColor:["#f1c40f","#2ecc71"]
+}]
+}
+
+})
+
+})
+
+/* TOP CITIES */
+
+fetch("http://127.0.0.1:5000/top-cities")
+.then(res=>res.json())
+.then(data=>{
+
+const table=document.getElementById("cityTable")
+
+data.forEach(city=>{
+
+const row=document.createElement("tr")
+
+row.innerHTML=`
+<td>${city._id}</td>
+<td>${city.count}</td>
+`
+
+table.appendChild(row)
+
+})
+
+})
+
+/* RECENT VOLUNTEERS */
+
+fetch("http://127.0.0.1:5000/volunteers")
+.then(res=>res.json())
+.then(data=>{
+
+const table=document.getElementById("volunteerTable")
+
+data.slice(-5).reverse().forEach(v=>{
+
+const row=document.createElement("tr")
+
+row.innerHTML=`
+<td>${v.name}</td>
+<td>${v.city}</td>
+<td>${v.status}</td>
+`
+
+table.appendChild(row)
+
+})
+
+})
+
+/* REQUEST STATUS CHART */
+
+fetch("http://127.0.0.1:5000/request-status")
+.then(res=>res.json())
+.then(data=>{
+
+new Chart(document.getElementById("requestChart"),{
+
+type:"bar",
+
+data:{
+labels:["Pending","Approved"],
+datasets:[{
+label:"Request Status",
+data:[data.pending,data.approved],
+backgroundColor:["#f1c40f","#2ecc71"]
+}]
+},
+
+options:{
+plugins:{
+legend:{
+display:false
+}
+},
+scales:{
+y:{
+beginAtZero:true
+}
+}
+}
+
+})
+
+})
+
+
+</script>
+
+</body>
+</html>

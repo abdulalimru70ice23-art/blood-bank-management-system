@@ -47,24 +47,24 @@
 
 </section>
 
-<!-- FORM SECTION -->
+<!-- FORM -->
 
 <div class="request-container">
 
-<form class="request-form" onsubmit="return validateForm()">
+<form class="request-form" id="requestForm">
 
 <div class="form-left">
 
 <label>Patient Name</label>
-<input type="text" id="name" placeholder="Enter patient name">
+<input type="text" id="name" placeholder="Enter patient name" required>
 
 <label>Contact Number</label>
-<input type="text" id="phone" placeholder="Phone number">
+<input type="text" id="phone" placeholder="Phone number" required>
 
 <label>Blood Group Needed</label>
 
-<select id="bloodGroup">
-<option>Select blood group</option>
+<select id="bloodGroup" required>
+<option value="">Select blood group</option>
 <option>A+</option>
 <option>A-</option>
 <option>B+</option>
@@ -76,29 +76,27 @@
 </select>
 
 <label>Hospital / Location</label>
-<input type="text" placeholder="Enter hospital or location">
+<input type="text" id="location" placeholder="Enter hospital or location" required>
 
 <label>Units Needed</label>
-<input type="number" placeholder="Example: 2 bags">
+<input type="number" id="units" placeholder="Example: 2 bags">
 
 </div>
 
 <div class="form-right">
 
 <label>Reason / Medical Condition</label>
-<textarea placeholder="Explain why blood is needed..." rows="6"></textarea>
+<textarea id="reason" placeholder="Explain why blood is needed..." rows="6"></textarea>
 
 <label>Upload Medical Document</label>
 
 <div class="upload-box">
-
 <input type="file">
-
 </div>
 
 <label>Urgency Level</label>
 
-<select>
+<select id="urgency">
 <option>Normal</option>
 <option>Urgent</option>
 <option>Emergency</option>
@@ -108,7 +106,7 @@
 
 <div class="submit-area">
 
-<button type="submit" onclick="showPopup()">Send Blood Request</button>
+<button type="submit">Send Blood Request</button>
 
 </div>
 
@@ -124,22 +122,21 @@
 
 </footer>
 
-<script src="script.js"></script>
-
-
 <script>
 
-document.querySelector("form").addEventListener("submit", async function(e){
+document.getElementById("requestForm").addEventListener("submit", async function(e){
 
 e.preventDefault();
 
 const request = {
 
-patient: document.querySelector("input[placeholder='Enter patient name']").value,
-phone: document.querySelector("input[placeholder='Phone number']").value,
-blood: document.querySelector("select").value,
-location: document.querySelector("input[placeholder='Enter hospital or location']").value,
-reason: document.querySelector("textarea").value
+patient: document.getElementById("name").value,
+phone: document.getElementById("phone").value,
+blood: document.getElementById("bloodGroup").value,
+location: document.getElementById("location").value,
+units: document.getElementById("units").value,
+reason: document.getElementById("reason").value,
+urgency: document.getElementById("urgency").value
 
 };
 
@@ -159,11 +156,11 @@ const data = await res.text();
 
 alert(data);
 
+document.getElementById("requestForm").reset();
+
 });
 
 </script>
 
-
 </body>
-
 </html>

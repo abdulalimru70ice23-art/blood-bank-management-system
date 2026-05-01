@@ -16,7 +16,10 @@
 
 <body>
 
+<!-- Back to Home -->
+
 <a href="index.html" class="back-home">← Back to Home</a>
+
 
 <div class="login-wrapper">
 
@@ -30,30 +33,64 @@
 
 <p class="subtitle">Authorized personnel only</p>
 
-<form onsubmit="return adminLogin()">
+
+<!-- LOGIN FORM -->
+
+<form id="adminLoginForm" onsubmit="return adminLogin()" autocomplete="off">
 
 <div class="input-group">
-<input type="text" id="adminUser" placeholder="Admin Email / ID">
+
+<input 
+type="text" 
+id="adminUser" 
+placeholder="Admin Email / ID"
+required>
+
 </div>
 
-<div class="input-group">
-<input type="password" id="adminPass" placeholder="Admin Password">
-</div>
 
 <div class="input-group">
-<input type="text" id="adminCode" placeholder="Security Code">
+
+<input 
+type="password" 
+id="adminPass" 
+placeholder="Admin Password"
+required>
+
 </div>
+
+
+<div class="input-group">
+
+<input 
+type="text" 
+id="adminCode" 
+placeholder="Security Code"
+required>
+
+</div>
+
 
 <div class="options">
+
 <a href="admin-forgot-password.html">Forgot Password?</a>
+
 </div>
 
-<button class="login-btn" type="submit">Login as Admin</button>
+
+<button class="login-btn" type="submit">
+
+Login as Admin
+
+</button>
 
 </form>
 
+
 <p class="warning">
+
 ⚠ Unauthorized access is prohibited
+
 </p>
 
 </div>
@@ -65,9 +102,9 @@
 
 function adminLogin(){
 
-let username = document.getElementById("adminUser").value;
-let password = document.getElementById("adminPass").value;
-let code = document.getElementById("adminCode").value;
+let username = document.getElementById("adminUser").value.trim();
+let password = document.getElementById("adminPass").value.trim();
+let code = document.getElementById("adminCode").value.trim();
 
 if(username === "" || password === "" || code === ""){
 
@@ -80,7 +117,7 @@ if(username === "admin" && password === "12345" && code === "RU123"){
 
 localStorage.setItem("adminLoggedIn","true");
 
-window.location.href="admin-dashboard.html";
+window.location.href = "admin-dashboard.html";
 
 return false;
 

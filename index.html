@@ -8,6 +8,19 @@
 
 <title>LifeShare - Home</title>
 
+<script>
+
+/* Dashboard protection
+Only logged users can access */
+
+if(!localStorage.getItem("userLoggedIn")){
+
+window.location.href="login.html";
+
+}
+
+</script>
+
 <link rel="stylesheet" href="style.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -27,22 +40,13 @@
 <ul class="nav-links">
 
 <li><a href="index.html">Home</a></li>
-
 <li><a href="find-donor.html">Find Donor</a></li>
-
-<li><a href="donate.html">Donate Blood</a></li>
-
 <li><a href="request-blood.html">Request Blood</a></li>
-
 <li><a href="volunteer.html">Volunteer</a></li>
 
-<li><a href="about.html">About</a></li>
+<li><a href="user-profile.html">Profile</a></li>
 
-<li><a href="contact.html">Contact</a></li>
-
-<li><a href="login.html">Login</a></li>
-
-<li><a href="register.html" class="signup-btn">Sign Up</a></li>
+<li><a href="login.html" onclick="localStorage.removeItem('userLoggedIn')">Logout</a></li>
 
 </ul>
 
@@ -100,6 +104,7 @@
 <h3>Admin</h3>
 <p>Manage system operations.</p>
 </a>
+
 </section>
 
 
@@ -140,22 +145,22 @@
 <div class="stats-container">
 
 <div class="stat-card">
-<h3>5000+</h3>
+<h3 id="donorCount">0</h3>
 <p>Registered Donors</p>
 </div>
 
 <div class="stat-card">
-<h3>1200+</h3>
+<h3 id="requestCount">0</h3>
 <p>Blood Requests</p>
 </div>
 
 <div class="stat-card">
-<h3>3500+</h3>
+<h3 id="livesSaved">0</h3>
 <p>Lives Saved</p>
 </div>
 
 <div class="stat-card">
-<h3>200+</h3>
+<h3 id="volunteerCount">0</h3>
 <p>Active Volunteers</p>
 </div>
 
@@ -191,6 +196,7 @@ and find available donors in your area.
 <p>© 2026 LifeShare Blood Bank Management System</p>
 
 </footer>
+
 
 <script src="script.js"></script>
 

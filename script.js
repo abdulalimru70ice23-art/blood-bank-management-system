@@ -1,6 +1,6 @@
-// ==============================
-// DONOR REGISTER (MongoDB)
-// ==============================
+// =====================================================
+// DONOR REGISTER (Send donor data to MongoDB backend)
+// =====================================================
 
 document.getElementById("donorForm")?.addEventListener("submit", async function(e){
 
@@ -54,14 +54,14 @@ alert("Server error. Please try again.");
 });
 
 
-// ==============================
-// FIND DONOR SEARCH FILTER
-// ==============================
+// =====================================================
+// FIND DONOR FILTER
+// =====================================================
 
 function filterDonors(){
 
-let blood = document.getElementById("bloodFilter").value.toLowerCase();
-let location = document.getElementById("locationInput").value.toLowerCase();
+let blood = document.getElementById("bloodFilter")?.value.toLowerCase();
+let location = document.getElementById("locationInput")?.value.toLowerCase();
 
 let cards = document.querySelectorAll(".donor-card");
 
@@ -88,9 +88,9 @@ card.style.display="none";
 }
 
 
-// ==============================
-// ADMIN LOGIN
-// ==============================
+// =====================================================
+// ADMIN LOGIN SYSTEM
+// =====================================================
 
 function adminLogin(){
 
@@ -125,11 +125,11 @@ return false;
 }
 
 
-// ==============================
+// =====================================================
 // ADMIN LOGOUT
-// ==============================
+// =====================================================
 
-function logout(){
+function adminLogout(){
 
 localStorage.removeItem("adminLoggedIn");
 
@@ -137,6 +137,10 @@ window.location.href="admin-login.html";
 
 }
 
+
+// =====================================================
+// USER LOGIN STATUS CHECK
+// =====================================================
 
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -144,31 +148,183 @@ const loggedIn = localStorage.getItem("userLoggedIn");
 
 if(loggedIn){
 
-document.getElementById("guestMenu").style.display="none";
-document.getElementById("userMenu").style.display="inline";
+document.getElementById("guestMenu")?.style.display="none";
+document.getElementById("userMenu")?.style.display="flex";
 
 }else{
 
-document.getElementById("guestMenu").style.display="inline";
-document.getElementById("userMenu").style.display="none";
+document.getElementById("guestMenu")?.style.display="flex";
+document.getElementById("userMenu")?.style.display="none";
 
 }
 
 });
 
-function logout(){
 
-localStorage.removeItem("userLoggedIn");
 
-window.location.href="index.html";
+
+// =====================================================
+// VOLUNTEER DATA LOAD
+// =====================================================
+
+async function loadVolunteers(){
+
+const res = await fetch("http://localhost:5000/api/volunteers");
+
+const data = await res.json();
+
+const table = document.getElementById("volunteerTable");
+
+if(!table) return;
+
+table.innerHTML="";
+
+data.forEach(v=>{
+
+table.innerHTML += `
+
+<tr>
+<td>${v.name}</td>
+<td>${v.blood}</td>
+<td>${v.phone}</td>
+<td>${v.area}</td>
+<td>${v.status}</td>
+
+<td>
+<button onclick="deleteVolunteer('${v._id}')">Delete</button>
+</td>
+</tr>
+
+`;
+
+});
 
 }
 
 
-function logout(){
+// =====================================================
+// DELETE VOLUNTEER
+// =====================================================
 
-localStorage.removeItem("adminLoggedIn");
+async function deleteVolunteer(id){
 
-window.location.href="admin-login.html";
+if(!confirm("Delete this volunteer?")) return;
+
+await fetch(`http://localhost:5000/api/volunteers/${id}`,{
+method:"DELETE"
+});
+
+loadVolunteers();
 
 }
+
+if(document.getElementById("volunteerTable")){
+loadVolunteers();
+}
+
+
+// =====================================================
+// APPROVE BLOOD REQUEST
+// =====================================================
+
+function approveRequest(id){
+
+fetch("http://127.0.0.1:5000/approve-request/"+id,{
+method:"PUT"
+})
+.then(res=>res.json())
+.then(data=>{
+alert("Request Approved");
+location.reload();
+})
+
+}
+
+
+
+
+
+// =====================================================
+// USER LOGIN SUCCESS
+// =====================================================
+
+function loginSuccess(){
+
+localStorage.setItem("userLoggedIn","true");
+
+window.location.href = "index.html";
+
+}
+
+
+// =====================================================
+// FETCH LIVE STATISTICS
+// =====================================================
+
+async function loadStats(){
+
+try{
+
+const donorRes = await fetch("http://127.0.0.1:5000/total-donors");
+const donors = await donorRes.json();
+
+document.getElementById("donorCount")?.innerText = donors.total + "+";
+
+
+const requestRes = await fetch("http://127.0.0.1:5000/total-requests");
+const requests = await requestRes.json();
+
+document.getElementById("requestCount")?.innerText = requests.total + "+";
+
+
+const volunteerRes = await fetch("http://127.0.0.1:5000/total-volunteers");
+const volunteers = await volunteerRes.json();
+
+document.getElementById("volunteerCount")?.innerText = volunteers.total + "+";
+
+
+const livesRes = await fetch("http://127.0.0.1:5000/approved-requests");
+const lives = await livesRes.json();
+
+document.getElementById("livesSaved")?.innerText = lives.total + "+";
+
+}
+
+catch(error){
+
+console.error("Error loading stats:", error);
+
+}
+
+}
+
+
+// =====================================================
+// LOAD STATS WHEN PAGE LOADS
+// =====================================================
+
+document.addEventListener("DOMContentLoaded", function(){
+
+if(document.getElementById("donorCount")){
+loadStats();
+}
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

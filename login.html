@@ -16,7 +16,13 @@
 
 <body>
 
-<a href="index.html" class="back-home">← Back to Home</a>
+<!-- ============================= -->
+<!-- BACK TO HOME BUTTON -->
+<!-- Public Home Page -->
+<!-- ============================= -->
+
+<a href="Home.html" class="back-home">← Back to Home</a>
+
 
 <div class="container">
 
@@ -29,6 +35,11 @@
 <h2 class="title">Blood Bank Management System</h2>
 
 <p class="subtitle">Be the reason someone lives today</p>
+
+
+<!-- ============================= -->
+<!-- LOGIN FORM -->
+<!-- ============================= -->
 
 <form id="loginForm">
 
@@ -48,15 +59,28 @@
 
 </form>
 
+
+<!-- ============================= -->
+<!-- REGISTER LINK -->
+<!-- ============================= -->
+
 <div class="register">
+
 <p>Don't have an account?</p>
 <a href="register.html">Create Account</a>
-</div>
 
 </div>
 
 </div>
 
+</div>
+
+
+
+<!-- ============================= -->
+<!-- LOGIN SCRIPT -->
+<!-- Send login data to backend -->
+<!-- ============================= -->
 
 <script>
 
@@ -64,12 +88,22 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
 e.preventDefault();
 
+
+// ===================================
+// Collect login information
+// ===================================
+
 const loginData = {
 
 phone: document.getElementById("phone").value,
 password: document.getElementById("password").value
 
 };
+
+
+// ===================================
+// Send login request to backend API
+// ===================================
 
 const res = await fetch("http://127.0.0.1:5000/login",{
 
@@ -83,17 +117,35 @@ body: JSON.stringify(loginData)
 
 });
 
+
+// ===================================
+// Get response from server
+// ===================================
+
 const data = await res.text();
 
 alert(data);
 
+
+// ===================================
+// LOGIN SUCCESS
+// Save login session and redirect
+// ===================================
+
 if(data === "Login Successful"){
+
+// Store login session in browser
+localStorage.setItem("userLoggedIn","true");
+
+// Redirect user to dashboard
 window.location.href = "index.html";
+
 }
 
 });
 
 </script>
+
 
 </body>
 </html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Volunteers - LifeShare</title>
+
+<link rel="stylesheet" href="admin-dashboard.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>🩸 LifeShare</h2>
+
+<ul>
+
+<li><a href="admin-dashboard.html">Dashboard</a></li>
+<li><a href="admin-donor-list.html">Donor List</a></li>
+<li><a href="admin-requests.html">Blood Requests</a></li>
+<li class="active"><a href="admin-volunteers.html">Volunteers</a></li>
+<li><a href="admin-reports.html">Reports</a></li>
+<li><a href="admin-settings.html">Settings</a></li>
+
+</ul>
+
+<a href="#" onclick="logout()">Logout</a>
+
+</div>
+
+<!-- Main Content -->
+
+<div class="main">
+
+<h1>Volunteers</h1>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Name</th>
+<th>Phone</th>
+<th>Email</th>
+<th>City</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="volunteerTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+async function loadVolunteers(){
+
+const res = await fetch("http://127.0.0.1:5000/volunteers")
+
+const data = await res.json()
+
+const table = document.getElementById("volunteerTable")
+
+table.innerHTML=""
+
+data.forEach(v=>{
+
+const row = document.createElement("tr")
+
+row.innerHTML=`
+
+<td>${v.name}</td>
+<td>${v.phone}</td>
+<td>${v.email}</td>
+<td>${v.city}</td>
+
+<td style="color:${v.status==="Approved"?"green":"orange"}">
+${v.status}
+</td>
+
+<td>
+
+<button onclick="approveVolunteer('${v._id}')">Approve</button>
+
+<button onclick="deleteVolunteer('${v._id}')">Delete</button>
+
+</td>
+
+`
+
+table.appendChild(row)
+
+})
+
+}
+
+loadVolunteers()
+
+
+async function approveVolunteer(id){
+
+await fetch("http://127.0.0.1:5000/approve-volunteer/"+id,{
+method:"PUT"
+})
+
+loadVolunteers()
+
+}
+
+
+async function deleteVolunteer(id){
+
+await fetch("http://127.0.0.1:5000/delete-volunteer/"+id,{
+method:"DELETE"
+})
+
+loadVolunteers()
+
+}
+
+
+// LOGOUT
+
+function logout(){
+
+localStorage.removeItem("adminLoggedIn")
+
+window.location.href="admin-login.html"
+
+}
+
+</script>
+
+</body>
+
+</html>
