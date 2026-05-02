@@ -218,6 +218,10 @@ const phone = localStorage.getItem("phone")
 
 const res = await fetch("http://127.0.0.1:5000/user-profile")
 
+if(!res.ok){
+throw new Error("Server error")
+}
+
 const user = await res.json()
 
 document.getElementById("name").value = user.name || ""
@@ -226,8 +230,9 @@ document.getElementById("location").value = user.location || ""
 
 }catch(err){
 
-console.log(err)
-alert("Failed to load user data")
+console.log("User load error:", err)
+
+// ❌ alert না দেখিয়ে শুধু console এ রাখাই ভালো
 
 }
 
