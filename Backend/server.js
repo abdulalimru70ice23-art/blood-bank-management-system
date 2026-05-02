@@ -448,16 +448,29 @@ res.status(500).json({error:err.message})
 
 })
 
-
 // ==============================
-// USER PROFILE
+// USER PROFILE (BY PHONE)
 // ==============================
 
-app.get("/user-profile", async (req,res)=>{
+app.get("/user/:phone", async (req,res)=>{
 
-const user = await User.findOne().sort({_id:-1})
+const phone = req.params.phone
+
+try{
+
+const user = await User.findOne({phone:phone})
+
+if(!user){
+return res.status(404).json({message:"User not found"})
+}
 
 res.json(user)
+
+}catch(err){
+
+res.status(500).json({error:"Server error"})
+
+}
 
 })
 
@@ -468,7 +481,7 @@ res.json(user)
 
 app.put("/update-profile", async (req,res)=>{
 
-const {name,bloodGroup,location,phone,password}=req.body
+const {name,bloodGroup,location,phone,password} = req.body
 
 const updateData = {
 name,
@@ -480,6 +493,8 @@ if(password){
 updateData.password = password
 }
 
+try{
+
 await User.findOneAndUpdate(
 {phone:phone},
 updateData
@@ -487,7 +502,14 @@ updateData
 
 res.send("Profile Updated Successfully")
 
+}catch(err){
+
+res.status(500).send("Update Failed")
+
+}
+
 })
+
 
 // ==============================
 // USER REQUESTS
@@ -497,16 +519,24 @@ app.get("/my-requests/:phone", async (req,res)=>{
 
 const phone = req.params.phone
 
+try{
+
 const requests = await Request.find({phone:phone})
 .sort({date:-1})
 
 res.json(requests)
 
+}catch(err){
+
+res.status(500).json({error:"Server error"})
+
+}
+
 })
 
 
 // ==============================
-// SERVER START (ONLY ONCE)
+// SERVER START
 // ==============================
 
 app.listen(5000, ()=>{

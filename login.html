@@ -88,10 +88,9 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
 e.preventDefault();
 
-
-// ===================================
-// Collect login information
-// ===================================
+// ===============================
+// Collect Login Data
+// ===============================
 
 const loginData = {
 
@@ -100,10 +99,11 @@ password: document.getElementById("password").value
 
 };
 
+try{
 
-// ===================================
-// Send login request to backend API
-// ===================================
+// ===============================
+// Send login request
+// ===============================
 
 const res = await fetch("http://127.0.0.1:5000/login",{
 
@@ -117,28 +117,27 @@ body: JSON.stringify(loginData)
 
 });
 
-
-// ===================================
-// Get response from server
-// ===================================
-
 const data = await res.text();
 
 alert(data);
 
-
-// ===================================
+// ===============================
 // LOGIN SUCCESS
-// Save login session and redirect
-// ===================================
+// ===============================
 
 if(data === "Login Successful"){
 
-// Store login session in browser
 localStorage.setItem("userLoggedIn","true");
+localStorage.setItem("phone", loginData.phone);
 
-// Redirect user to dashboard
 window.location.href = "index.html";
+
+}
+
+}catch(err){
+
+console.log("Login error:", err);
+alert("Server error. Please try again.");
 
 }
 

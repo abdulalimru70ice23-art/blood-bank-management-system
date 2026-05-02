@@ -160,67 +160,93 @@ color:white;
 </div>
 
 
+<!-- ============================= -->
+<!-- USER PROFILE SCRIPT -->
+<!-- ============================= -->
+
 <script>
+
+// ===============================
+// CHECK LOGIN
+// ===============================
+
+const phone = localStorage.getItem("phone");
+
+if(!phone){
+
+alert("Please login first");
+window.location.href = "login.html";
+
+}
+
 
 // ===============================
 // LOAD USER PROFILE
 // ===============================
 
-fetch("http://127.0.0.1:5000/user-profile")
+fetch(`http://127.0.0.1:5000/user/${phone}`)
 
 .then(res => res.json())
 
 .then(user => {
 
-// phone save
-localStorage.setItem("phone", user.phone)
-
-// PROFILE DATA
-document.getElementById("userName").innerText = user.name
-document.getElementById("phone").innerText = user.phone
+document.getElementById("userName").innerText = user.name || "Unknown"
+document.getElementById("phone").innerText = user.phone || "Not available"
 document.getElementById("blood").innerText = user.bloodGroup || "Not set"
 document.getElementById("location").innerText = user.location || "Not set"
+
+})
+
+.catch(err => {
+
+console.log("User load error:", err);
+
+});
 
 
 // ===============================
 // LOAD USER REQUESTS
 // ===============================
 
-fetch(`http://127.0.0.1:5000/my-requests/${user.phone}`)
+fetch(`http://127.0.0.1:5000/my-requests/${phone}`)
 
 .then(res => res.json())
 
 .then(data => {
 
-const table = document.getElementById("requestTable")
+const table = document.getElementById("requestTable");
 
-table.innerHTML = ""
+table.innerHTML = "";
 
 if(data.length === 0){
 
-table.innerHTML = `<tr><td colspan="4">No Requests Yet</td></tr>`
-return
+table.innerHTML = `<tr><td colspan="4">No Requests Yet</td></tr>`;
+return;
 
 }
 
 data.forEach(r => {
 
-const row = document.createElement("tr")
+const row = document.createElement("tr");
 
 row.innerHTML = `
 <td>${r.location}</td>
 <td>${r.blood}</td>
 <td>${r.status}</td>
 <td>${new Date(r.date).toLocaleDateString()}</td>
-`
+`;
 
-table.appendChild(row)
+table.appendChild(row);
 
-})
-
-})
+});
 
 })
+
+.catch(err => {
+
+console.log("Request load error:", err);
+
+});
 
 
 // ===============================
@@ -229,11 +255,12 @@ table.appendChild(row)
 
 function editProfile(){
 
-window.location.href = "edit-profile.html"
+window.location.href = "edit-profile.html";
 
 }
 
 </script>
+
 
 </body>
 </html>
