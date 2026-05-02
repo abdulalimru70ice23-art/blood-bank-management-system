@@ -33,22 +33,31 @@ window.location.href="login.html";
 
 <nav class="navbar">
 
-<div class="logo">🩸 LifeShare</div>
+<div class="logo">
+<span>🩸</span> LifeShare
+</div>
 
-<div class="menu-toggle">☰</div>
+<div class="nav-left">
 
-<ul class="nav-links">
-
-<li><a href="index.html">Home</a></li>
+<ul class="menu">
+<li><a href="index.html" class="active">Home</a></li>
 <li><a href="find-donor.html">Find Donor</a></li>
+<li><a href="donate.html">Donate Blood</a></li>
 <li><a href="request-blood.html">Request Blood</a></li>
 <li><a href="volunteer.html">Volunteer</a></li>
-
-<li><a href="user-profile.html">Profile</a></li>
-
-<li><a href="login.html" onclick="localStorage.removeItem('userLoggedIn')">Logout</a></li>
-
+<li><a href="about.html">About</a></li>
+<li><a href="contact.html">Contact</a></li>
 </ul>
+
+</div>
+
+<div class="nav-right">
+
+<a href="user-profile.html" class="profile-box">
+👤
+</a>
+
+</div>
 
 </nav>
 

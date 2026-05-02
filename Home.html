@@ -8,7 +8,7 @@
 
 <title>LifeShare - Welcome</title>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="Home.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -16,7 +16,7 @@
 
 <body>
 
-<!-- Navbar -->
+<!-- ================= NAVBAR ================= -->
 
 <nav class="navbar">
 
@@ -26,14 +26,10 @@
 
 <ul class="nav-links">
 
-<li><a href="Home.html">Home</a></li>
-
+<li><a href="Home.html" class="active">Home</a></li>
 <li><a onclick="showLoginMessage()">About</a></li>
 <li><a onclick="showLoginMessage()">Contact</a></li>
-
 <li><a href="login.html">Login</a></li>
-
-
 <li><a href="register.html" class="signup-btn">Sign Up</a></li>
 
 </ul>
@@ -41,7 +37,7 @@
 </nav>
 
 
-<!-- Hero Section -->
+<!-- ================= HERO ================= -->
 
 <section class="hero">
 
@@ -57,8 +53,13 @@
 
 <div class="hero-buttons">
 
-<a href="#" onclick="showLoginMessage(); return false;" class="btn">Find Donor</a>
-<a href="#" onclick="showLoginMessage(); return false;" class="btn-outline">Request Blood</a>
+<a href="#" onclick="showLoginMessage(); return false;" class="btn">
+Find Donor
+</a>
+
+<a href="#" onclick="showLoginMessage(); return false;" class="btn-outline">
+Request Blood
+</a>
 
 </div>
 
@@ -67,7 +68,7 @@
 </section>
 
 
-<!-- Why Donate Blood -->
+<!-- ================= WHY SECTION ================= -->
 
 <section class="why">
 
@@ -95,7 +96,7 @@
 </section>
 
 
-<!-- Footer -->
+<!-- ================= FOOTER ================= -->
 
 <footer>
 
@@ -103,31 +104,32 @@
 
 </footer>
 
+
+<!-- ================= JS ================= -->
+
 <script>
 
-// ======================================
-// Show message for restricted features
-// If user not logged in, ask them to login
-// ======================================
+const toggle = document.querySelector(".menu-toggle");
+const nav = document.querySelector(".nav-links");
+
+toggle.onclick = () =>{
+nav.classList.toggle("active");
+}
+
 
 function showLoginMessage(){
 
-let goLogin = confirm("You must Sign Up or Login first to use this feature.\n\nPress OK to go to Login page or Cancel to stay here.");
+let goLogin = confirm(
+"You must Sign Up or Login first to use this feature.\n\nPress OK to go to Login page or Cancel to stay here."
+);
 
 if(goLogin){
-
-// user chose OK → go to login page
 window.location.href = "login.html";
-
 }
-
-// user pressed Cancel → stay on same page
 
 }
 
 </script>
 
-
 </body>
-
 </html>
