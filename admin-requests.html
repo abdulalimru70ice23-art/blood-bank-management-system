@@ -3,17 +3,247 @@
 
 <head>
 
-<title>Blood Requests - LifeShare</title>
+<title>Admin Blood Requests - LifeShare</title>
 
-<link rel="stylesheet" href="admin-dashboard.css">
+<style>
+
+/* BODY */
+
+body{
+font-family:Poppins;
+margin:0;
+background:url("Images/report-bg.png") center/cover fixed;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:220px;
+height:100%;
+background:#2c3e50;
+padding-top:25px;
+color:white;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:30px;
+}
+
+.sidebar a{
+display:block;
+padding:14px 25px;
+color:white;
+text-decoration:none;
+}
+
+.sidebar a:hover{
+background:#34495e;
+}
+
+/* PAGE */
+
+.page{
+margin-left:230px;
+padding:40px;
+}
+
+/* TITLE */
+
+.page h1{
+text-align:center;
+font-size:34px;
+margin-bottom:30px;
+color:#2c3e50;
+}
+
+/* STATS */
+
+.top-stats{
+display:flex;
+justify-content:center;
+gap:25px;
+margin-bottom:30px;
+}
+
+.stat-card{
+width:220px;
+padding:25px;
+border-radius:16px;
+background:rgba(255,255,255,0.7);
+backdrop-filter:blur(10px);
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.stat-card:nth-child(1){border-top:4px solid #3498db;}
+.stat-card:nth-child(2){border-top:4px solid #f39c12;}
+.stat-card:nth-child(3){border-top:4px solid #2ecc71;}
+
+.stat-card h3{
+font-size:28px;
+color:#e74c3c;
+}
+
+/* CONTROLS */
+
+.controls{
+display:flex;
+justify-content:space-between;
+margin-bottom:20px;
+}
+
+.controls input{
+width:260px;
+padding:10px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+.controls select{
+padding:10px;
+border-radius:8px;
+}
+
+/* TABLE CARD */
+
+.table-card{
+background:rgba(255,255,255,0.8);
+backdrop-filter:blur(10px);
+border-radius:16px;
+padding:25px;
+box-shadow:0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#ff5c5c;
+color:white;
+padding:14px;
+text-align:left;
+}
+
+td{
+padding:14px;
+border-bottom:1px solid #eee;
+}
+
+/* STATUS */
+
+.status-approved{
+color:#27ae60;
+font-weight:bold;
+}
+
+.status-pending{
+color:#f39c12;
+font-weight:bold;
+}
+
+.status-rejected{
+color:#e74c3c;
+font-weight:bold;
+}
+
+/* BUTTONS */
+
+.actions{
+display:flex;
+gap:6px;
+}
+
+.btn{
+border:none;
+padding:6px 12px;
+border-radius:6px;
+cursor:pointer;
+font-size:13px;
+}
+
+.approve{background:#2ecc71;color:white;}
+.reject{background:#e74c3c;color:white;}
+.delete{background:#555;color:white;}
+.view{background:#3498db;color:white;}
+
+</style>
 
 </head>
 
 <body>
 
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2>🩸 LifeShare</h2>
+
+<a href="admin-dashboard.html">Dashboard</a>
+<a href="admin-donors.html">Donor List</a>
+<a href="admin-requests.html">Blood Requests</a>
+<a href="admin-volunteers.html">Volunteers</a>
+<a href="admin-reports.html">Reports</a>
+<a href="admin-settings.html">Settings</a>
+<a href="admin-login.html">Logout</a>
+
+</div>
+
+
+<div class="page">
+
 <h1>Blood Requests</h1>
 
-<table border="1" width="100%">
+<!-- STATS -->
+
+<div class="top-stats">
+
+<div class="stat-card">
+<h3 id="totalReq">0</h3>
+<p>Total Requests</p>
+</div>
+
+<div class="stat-card">
+<h3 id="pendingReq">0</h3>
+<p>Pending</p>
+</div>
+
+<div class="stat-card">
+<h3 id="approvedReq">0</h3>
+<p>Approved</p>
+</div>
+
+</div>
+
+
+<!-- CONTROLS -->
+
+<div class="controls">
+
+<input type="text" id="search"
+placeholder="Search patient..."
+onkeyup="searchRequest()">
+
+<select onchange="filterStatus(this.value)">
+<option value="All">All</option>
+<option value="Pending">Pending</option>
+<option value="Approved">Approved</option>
+<option value="Rejected">Rejected</option>
+</select>
+
+</div>
+
+
+<div class="table-card">
+
+<table>
 
 <thead>
 
@@ -22,6 +252,8 @@
 <th>Blood</th>
 <th>Location</th>
 <th>Phone</th>
+<th>Reason</th>
+<th>Document</th>
 <th>Status</th>
 <th>Action</th>
 </tr>
@@ -32,81 +264,211 @@
 
 </table>
 
+</div>
+
+</div>
+
 
 <script>
 
-// LOAD REQUESTS
+/* ================= LOAD REQUESTS ================= */
 
 async function loadRequests(){
 
-const res = await fetch("http://127.0.0.1:5000/requests");
+const res = await fetch("http://127.0.0.1:5000/requests")
+const data = await res.json()
 
-const data = await res.json();
+const table = document.getElementById("requestTable")
+table.innerHTML = ""
 
-const table = document.getElementById("requestTable");
-
-table.innerHTML="";
+let total = data.length
+let pending = 0
+let approved = 0
 
 data.forEach(req=>{
 
-const row = document.createElement("tr");
+if(req.status==="Pending") pending++
+if(req.status==="Approved") approved++
+
+const row = document.createElement("tr")
 
 row.innerHTML = `
-<td>${req.patient}</td>
-<td>${req.blood}</td>
-<td>${req.location}</td>
-<td>${req.phone}</td>
 
-<td style="color:${req.status === 'Approved' ? 'green' : 'orange'}">
-${req.status}
-</td>
+<td>${req.patient || "Unknown"}</td>
+<td>${req.blood || "-"}</td>
+<td>${req.location || "-"}</td>
+<td>${req.phone || "-"}</td>
+<td>${req.reason || "-"}</td>
 
 <td>
-<button onclick="approveRequest('${req._id}')">Approve</button>
-<button onclick="deleteRequest('${req._id}')">Delete</button>
-</td>
-`;
 
-table.appendChild(row);
+${req.document && req.document !== "" ?
 
-});
+`<button class="btn view"
+onclick="viewDoc('${req.document}')">
+View
+</button>`
+
+:
+
+`<span style="color:#aaa">No File</span>`
 
 }
 
-loadRequests();
+</td>
+
+<td class="status-${(req.status || "Pending").toLowerCase()} status">
+${req.status || "Pending"}
+</td>
+
+<td class="actions">
+
+<button class="btn approve"
+onclick="approveRequest('${req._id}')">
+Approve
+</button>
+
+<button class="btn reject"
+onclick="rejectRequest('${req._id}')">
+Reject
+</button>
+
+<button class="btn delete"
+onclick="deleteRequest('${req._id}')">
+Delete
+</button>
+
+</td>
+`
+
+table.appendChild(row)
+
+})
+
+document.getElementById("totalReq").innerText = total
+document.getElementById("pendingReq").innerText = pending
+document.getElementById("approvedReq").innerText = approved
+
+}
+
+loadRequests()
 
 
-// APPROVE REQUEST
+
+/* ================= APPROVE ================= */
 
 async function approveRequest(id){
 
 await fetch("http://127.0.0.1:5000/approve-request/"+id,{
 method:"PUT"
-});
+})
 
-alert("Request Approved");
-
-location.reload();
+loadRequests()
 
 }
 
 
-// DELETE REQUEST
+
+/* ================= REJECT ================= */
+
+async function rejectRequest(id){
+
+await fetch("http://127.0.0.1:5000/reject-request/"+id,{
+method:"PUT"
+})
+
+loadRequests()
+
+}
+
+
+
+/* ================= DELETE ================= */
 
 async function deleteRequest(id){
 
+if(!confirm("Delete this request?")) return
+
 await fetch("http://127.0.0.1:5000/delete-request/"+id,{
 method:"DELETE"
-});
+})
 
-alert("Request Deleted");
+loadRequests()
 
-location.reload();
+}
+
+
+
+/* ================= VIEW DOCUMENT ================= */
+
+function viewDoc(file){
+
+if(!file){
+
+alert("No document uploaded")
+return
+
+}
+
+window.open("http://127.0.0.1:5000/uploads/"+file)
+
+}
+
+
+
+/* ================= SEARCH ================= */
+
+function searchRequest(){
+
+const input = document.getElementById("search").value.toLowerCase()
+
+const rows = document.querySelectorAll("#requestTable tr")
+
+rows.forEach(row=>{
+
+const text = row.innerText.toLowerCase()
+
+row.style.display = text.includes(input) ? "" : "none"
+
+})
+
+}
+
+
+
+/* ================= FILTER ================= */
+
+function filterStatus(status){
+
+const rows = document.querySelectorAll("#requestTable tr")
+
+rows.forEach(row=>{
+
+const s = row.querySelector(".status").innerText.trim()
+
+if(status === "All"){
+
+row.style.display=""
+
+}
+
+else if(s === status){
+
+row.style.display=""
+
+}
+
+else{
+
+row.style.display="none"
+
+}
+
+})
 
 }
 
 </script>
 
 </body>
-
 </html>

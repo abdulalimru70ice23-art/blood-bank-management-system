@@ -1,6 +1,28 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
+
+/* ==============================
+FILE UPLOAD SETUP
+============================== */
+
+const storage = multer.diskStorage({
+
+destination: function(req,file,cb){
+cb(null, path.join(__dirname,"uploads"))
+},
+
+filename: function(req,file,cb){
+cb(null, Date.now()+"-"+file.originalname)
+}
+
+})
+
+const upload = multer({storage})
+
+
 
 const Donor = require("./models/Donor");
 const User = require("./models/User");
@@ -14,13 +36,29 @@ app.use(cors());
 app.use(express.json());
 
 
-// ==============================
-// MONGODB CONNECT
-// ==============================
+/* ==============================
+SERVE UPLOADED DOCUMENTS
+============================== */
+
+app.use("/uploads", express.static(path.join(__dirname,"uploads")))
+
+
+
+/* ==============================
+MONGODB CONNECT
+============================== */
 
 mongoose.connect("mongodb://127.0.0.1:27017/lifeShare")
 .then(()=> console.log("MongoDB Connected"))
 .catch(err=>console.log(err));
+
+
+
+
+
+
+
+
 
 
 // ==============================
@@ -106,17 +144,32 @@ res.send("Donor Deleted");
 // ==============================
 // USER SIGNUP
 // ==============================
+app.post("/signup",
+upload.fields([
+{ name:"nidFront", maxCount:1 },
+{ name:"nidBack", maxCount:1 }
+]),
+async (req,res)=>{
 
-app.post("/signup", async (req,res)=>{
+const user = new User({
 
-const user = new User(req.body);
+name:req.body.name,
+phone:req.body.phone,
+password:req.body.password,
 
-await user.save();
+bloodGroup:req.body.bloodGroup,
+location:req.body.location,
 
-res.send("User Registered");
+nidFront: req.files["nidFront"] ? req.files["nidFront"][0].filename : "",
+nidBack: req.files["nidBack"] ? req.files["nidBack"][0].filename : ""
 
-});
+})
 
+await user.save()
+
+res.send("User Registered")
+
+})
 
 // ==============================
 // LOGIN
@@ -145,24 +198,40 @@ res.send("Login Successful");
 // ADD BLOOD REQUEST
 // ==============================
 
-app.post("/add-request", async(req,res)=>{
+app.post("/add-request", upload.single("document"), async (req,res)=>{
 
-const request = new Request(req.body);
+const request = {
 
-await request.save();
+patient: req.body.patient,
+phone: req.body.phone,
+blood: req.body.blood,
+location: req.body.location,
+units: req.body.units,
+reason: req.body.reason,
+document: req.file ? req.file.filename : "",
 
-res.send("Blood request submitted");
+status: "Pending",
+date: new Date()
 
-});
+}
+
+const newRequest = new Request(request)
+
+await newRequest.save()
+
+res.send("Request submitted successfully")
+
+})
+
 
 
 // ==============================
-// GET REQUESTS
+// GET ALL REQUESTS (ADMIN PAGE)
 // ==============================
 
 app.get("/requests", async(req,res)=>{
 
-const requests = await Request.find();
+const requests = await Request.find().sort({date:-1});
 
 res.json(requests);
 
@@ -180,6 +249,21 @@ status:"Approved"
 });
 
 res.send("Request Approved");
+
+});
+
+
+// ==============================
+// REJECT REQUEST
+// ==============================
+
+app.put("/reject-request/:id", async (req,res)=>{
+
+await Request.findByIdAndUpdate(req.params.id,{
+status:"Rejected"
+});
+
+res.send("Request Rejected");
 
 });
 
@@ -211,6 +295,19 @@ res.json({total});
 
 
 // ==============================
+// APPROVED REQUESTS COUNT
+// ==============================
+
+app.get("/approved-requests", async (req, res) => {
+
+const total = await Request.countDocuments({ status: "Approved" })
+
+res.json({ total })
+
+})
+
+
+// ==============================
 // ADD VOLUNTEER
 // ==============================
 
@@ -223,6 +320,47 @@ await volunteer.save();
 res.send("Volunteer added");
 
 });
+
+
+// ==============================
+// GET ALL VOLUNTEERS
+// ==============================
+
+app.get("/volunteers", async (req,res)=>{
+
+const volunteers = await Volunteer.find()
+
+res.json(volunteers)
+
+})
+
+
+// ==============================
+// APPROVE VOLUNTEER
+// ==============================
+
+app.put("/approve-volunteer/:id", async (req,res)=>{
+
+await Volunteer.findByIdAndUpdate(req.params.id,{
+status:"Approved"
+})
+
+res.send("Volunteer Approved")
+
+})
+
+
+// ==============================
+// DELETE VOLUNTEER
+// ==============================
+
+app.delete("/delete-volunteer/:id", async (req,res)=>{
+
+await Volunteer.findByIdAndDelete(req.params.id)
+
+res.send("Volunteer Deleted")
+
+})
 
 
 // ==============================
@@ -267,73 +405,6 @@ res.json({total});
 
 
 // ==============================
-// SERVER START
-// ==============================
-
-app.listen(5000, ()=>{
-
-console.log("LifeShare Backend Server Running");
-
-});
-
-
-
-
-
-// ==============================
-// GET ALL VOLUNTEERS
-// ==============================
-
-app.get("/volunteers", async (req,res)=>{
-
-const volunteers = await Volunteer.find()
-
-res.json(volunteers)
-
-})
-
-
-// ==============================
-// APPROVE VOLUNTEER
-// ==============================
-
-app.put("/approve-volunteer/:id", async (req,res)=>{
-
-await Volunteer.findByIdAndUpdate(req.params.id,{
-status:"Approved"
-})
-
-res.send("Volunteer Approved")
-
-})
-
-
-// ==============================
-// DELETE VOLUNTEER
-// ==============================
-
-app.delete("/delete-volunteer/:id", async (req,res)=>{
-
-await Volunteer.findByIdAndDelete(req.params.id)
-
-res.send("Volunteer Deleted")
-
-})
-
-
-
-// APPROVED REQUESTS COUNT
-app.get("/approved-requests", async (req, res) => {
-
-const total = await Request.countDocuments({ status: "Approved" })
-
-res.json({ total })
-
-})
-
-
-
-// ==============================
 // TOP CITIES WITH DONORS
 // ==============================
 
@@ -355,11 +426,9 @@ res.json(cities)
 })
 
 
-
-
-// ================================
+// ==============================
 // REQUEST STATUS REPORT
-// ================================
+// ==============================
 
 app.get("/request-status", async (req, res) => {
 
@@ -379,108 +448,51 @@ res.status(500).json({error:err.message})
 
 })
 
-// GET ALL REQUESTS
-
-app.get("/requests", async (req,res)=>{
-
-const requests = await Request.find()
-
-res.json(requests)
-
-})
-
-
-
-
-
-
-
 
 // ==============================
-// GET REQUESTS
-// ==============================
-
-app.get("/requests", async(req,res)=>{
-
-const requests = await Request.find()
-res.json(requests)
-
-})
-
-
-// ==============================
-// APPROVE REQUEST
-// ==============================
-
-app.put("/approve-request/:id", async (req,res)=>{
-
-await Request.findByIdAndUpdate(req.params.id,{
-status:"Approved"
-})
-
-res.json({message:"Request Approved"})
-
-})
-
-
-// ==============================
-// DELETE REQUEST
-// ==============================
-
-app.delete("/delete-request/:id", async (req,res)=>{
-
-await Request.findByIdAndDelete(req.params.id)
-
-res.json({message:"Request Deleted"})
-
-})
-
-
-// ==============================
-// APPROVED REQUESTS COUNT
-// ==============================
-
-app.get("/approved-requests", async(req,res)=>{
-
-const total = await Request.countDocuments({status:"Approved"})
-
-res.json({total})
-
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // USER PROFILE
+// ==============================
+
 app.get("/user-profile", async (req,res)=>{
+
 const user = await User.findOne().sort({_id:-1})
+
 res.json(user)
+
 })
 
+
+// ==============================
 // UPDATE PROFILE
+// ==============================
+
 app.put("/update-profile", async (req,res)=>{
-const {name,blood,location,phone}=req.body
+
+const {name,bloodGroup,location,phone,password}=req.body
+
+const updateData = {
+name,
+bloodGroup,
+location
+}
+
+if(password){
+updateData.password = password
+}
+
 await User.findOneAndUpdate(
 {phone:phone},
-{name,blood,location}
+updateData
 )
-res.send("Profile Updated")
+
+res.send("Profile Updated Successfully")
+
 })
 
+// ==============================
 // USER REQUESTS
+// ==============================
+
 app.get("/my-requests/:phone", async (req,res)=>{
 
 const phone = req.params.phone
@@ -493,7 +505,12 @@ res.json(requests)
 })
 
 
-// SERVER START (LAST LINE)
+// ==============================
+// SERVER START (ONLY ONCE)
+// ==============================
+
 app.listen(5000, ()=>{
+
 console.log("LifeShare Backend Server Running")
+
 })

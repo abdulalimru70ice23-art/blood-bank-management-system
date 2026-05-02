@@ -172,10 +172,13 @@ fetch("http://127.0.0.1:5000/user-profile")
 
 .then(user => {
 
+// phone save
+localStorage.setItem("phone", user.phone)
+
 // PROFILE DATA
 document.getElementById("userName").innerText = user.name
 document.getElementById("phone").innerText = user.phone
-document.getElementById("blood").innerText = user.blood || "Not set"
+document.getElementById("blood").innerText = user.bloodGroup || "Not set"
 document.getElementById("location").innerText = user.location || "Not set"
 
 
@@ -226,7 +229,7 @@ table.appendChild(row)
 
 function editProfile(){
 
-alert("Edit profile feature will be added")
+window.location.href = "edit-profile.html"
 
 }
 

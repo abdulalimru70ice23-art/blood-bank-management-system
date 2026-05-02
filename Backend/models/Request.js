@@ -6,7 +6,11 @@ patient:String,
 phone:String,
 blood:String,
 location:String,
+units:Number,
+location:String,
 reason:String,
+
+document:String,   // 👈 এইটা add করতে হবে
 
 status:{
 type:String,

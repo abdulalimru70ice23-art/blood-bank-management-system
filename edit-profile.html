@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -8,139 +7,133 @@
 
 <title>Edit Profile - LifeShare</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
 
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:'Poppins', Arial;
+font-family:'Poppins',sans-serif;
 }
+
+/* ===== Background ===== */
 
 body{
 
 height:100vh;
-
 display:flex;
 justify-content:center;
 align-items:center;
 
-background:
-linear-gradient(
-rgba(0,0,0,0.55),
-rgba(0,0,0,0.55)
-),
-url("Images/report-bg0.png")
-center/cover no-repeat;
+background:url("https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?q=80&w=1974") no-repeat center center/cover;
 
 }
 
-/* Card */
+/* ===== Glass Card ===== */
 
 .card{
 
-background:rgba(255,255,255,0.95);
+width:420px;
 
-width:400px;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(15px);
+
+border-radius:20px;
 
 padding:35px;
 
-border-radius:14px;
+box-shadow:0 8px 40px rgba(0,0,0,0.2);
 
-box-shadow:0 20px 50px rgba(0,0,0,0.35);
+color:#fff;
+
+}
+
+/* ===== Title ===== */
+
+.card h2{
 
 text-align:center;
+margin-bottom:25px;
 
 }
 
-/* Title */
+/* ===== Inputs ===== */
 
-h2{
-margin-bottom:20px;
-}
-
-/* Input group */
-
-.input-group{
-
-margin-bottom:15px;
-text-align:left;
-
-}
-
-.input-group label{
+label{
 
 font-size:14px;
-font-weight:500;
+margin-top:10px;
 display:block;
-margin-bottom:5px;
 
 }
 
-input, select{
+input,select{
 
 width:100%;
-padding:11px;
 
+padding:10px;
+
+margin-top:5px;
+margin-bottom:12px;
+
+border:none;
 border-radius:8px;
-
-border:1px solid #ddd;
-
-font-size:14px;
 
 outline:none;
 
 }
 
-input:focus{
-
-border-color:#0f7c82;
-
-}
-
-/* Buttons */
-
-.buttons{
-
-margin-top:20px;
-
-display:flex;
-gap:10px;
-
-justify-content:center;
-
-}
+/* ===== Button ===== */
 
 button{
 
-padding:10px 16px;
+width:100%;
+padding:12px;
 
 border:none;
 
-border-radius:8px;
+border-radius:30px;
+
+background:#ff4d4d;
+
+color:white;
+
+font-weight:600;
 
 cursor:pointer;
 
-}
+margin-top:10px;
 
-.save{
-
-background:#0f7c82;
-color:white;
+transition:0.3s;
 
 }
 
-.cancel{
+button:hover{
 
-background:#e53935;
-color:white;
+background:#e63c3c;
 
 }
 
-.password{
+/* Back */
 
-background:#444;
-color:white;
+.back{
+
+position:absolute;
+top:30px;
+left:30px;
+
+background:#ffffffaa;
+
+padding:8px 16px;
+
+border-radius:20px;
+
+text-decoration:none;
+color:#333;
+
+font-weight:500;
 
 }
 
@@ -150,73 +143,119 @@ color:white;
 
 <body>
 
+<a href="user-profile.html" class="back">← Back</a>
+
 <div class="card">
 
 <h2>Edit Profile</h2>
 
-<div class="input-group">
+<form id="editForm">
+
 <label>Name</label>
-<input type="text" id="name">
-</div>
+<input type="text" id="name" required>
 
-<div class="input-group">
 <label>Blood Group</label>
-<input type="text" id="blood">
-</div>
 
-<div class="input-group">
-<label>Phone</label>
-<input type="text" id="phone">
-</div>
+<select id="bloodGroup">
 
-<div class="input-group">
-<label>Location</label>
-<input type="text" id="location">
-</div>
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>AB+</option>
+<option>AB-</option>
+<option>O+</option>
+<option>O-</option>
 
-<div class="input-group">
-<label>Last Donation Date</label>
-<input type="date" id="lastDonation">
-</div>
-
-<div class="input-group">
-<label>Availability</label>
-<select id="available">
-<option value="true">Available</option>
-<option value="false">Not Available</option>
 </select>
-</div>
 
-<div class="buttons">
+<label>Location</label>
 
-<button class="save" onclick="saveProfile()">Save</button>
+<select id="location">
 
-<button class="password" onclick="changePassword()">Change Password</button>
+<option>Dhaka</option>
+<option>Rajshahi</option>
+<option>Chittagong</option>
+<option>Khulna</option>
+<option>Sylhet</option>
 
-<button class="cancel" onclick="window.location.href='user-profile.html'">
-Cancel
-</button>
+</select>
 
-</div>
+<label>New Password</label>
+<input type="password" id="password" placeholder="Leave blank if no change">
+
+<button type="submit">Update Profile</button>
+
+</form>
 
 </div>
 
 <script>
 
-async function saveProfile(){
+/* ===============================
+LOAD CURRENT USER DATA
+=============================== */
+
+async function loadUser(){
+
+try{
+
+const phone = localStorage.getItem("phone")
+
+const res = await fetch("http://127.0.0.1:5000/user-profile")
+
+const user = await res.json()
+
+document.getElementById("name").value = user.name || ""
+document.getElementById("bloodGroup").value = user.bloodGroup || ""
+document.getElementById("location").value = user.location || ""
+
+}catch(err){
+
+console.log(err)
+alert("Failed to load user data")
+
+}
+
+}
+
+loadUser()
+
+
+/* ===============================
+UPDATE PROFILE
+=============================== */
+
+document.getElementById("editForm").addEventListener("submit", async function(e){
+
+e.preventDefault()
+
+const phone = localStorage.getItem("phone")
 
 const data = {
 
 name: document.getElementById("name").value,
-blood: document.getElementById("blood").value,
-phone: document.getElementById("phone").value,
+bloodGroup: document.getElementById("bloodGroup").value,
 location: document.getElementById("location").value,
-lastDonation: document.getElementById("lastDonation").value,
-available: document.getElementById("available").value
+phone: phone
 
-};
+}
 
-await fetch("http://127.0.0.1:5000/update-profile",{
+
+/* PASSWORD CHANGE (OPTIONAL) */
+
+const newPassword = document.getElementById("password").value
+
+if(newPassword !== ""){
+
+data.password = newPassword
+
+}
+
+
+try{
+
+const res = await fetch("http://127.0.0.1:5000/update-profile",{
 
 method:"PUT",
 
@@ -226,45 +265,26 @@ headers:{
 
 body: JSON.stringify(data)
 
-});
-
-alert("Profile Updated");
-
-window.location.href="user-profile.html";
-
-}
-
-/* Change password */
-
-async function changePassword(){
-
-const oldPassword = prompt("Enter old password");
-const newPassword = prompt("Enter new password");
-
-const phone = document.getElementById("phone").value;
-
-await fetch("http://127.0.0.1:5000/change-password",{
-
-method:"PUT",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body: JSON.stringify({
-phone,
-oldPassword,
-newPassword
 })
 
-});
+const msg = await res.text()
 
-alert("Password Updated");
+alert(msg)
+
+/* BACK TO PROFILE PAGE */
+
+window.location.href = "user-profile.html"
+
+}catch(err){
+
+console.log(err)
+alert("Profile update failed")
 
 }
+
+})
 
 </script>
 
 </body>
-
 </html>

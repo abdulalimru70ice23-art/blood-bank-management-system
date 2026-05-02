@@ -129,33 +129,29 @@ return;
 
 
 // =======================================
-// USER DATA OBJECT
+// CREATE FORM DATA (FOR FILE UPLOAD)
 // =======================================
 
-const user = {
+const formData = new FormData()
 
-name: document.getElementById("name").value,
-phone: document.getElementById("phone").value,
-blood: document.getElementById("blood").value,
-location: document.getElementById("location").value,
-password: password
+formData.append("name", document.getElementById("name").value)
+formData.append("phone", document.getElementById("phone").value)
+formData.append("bloodGroup", document.getElementById("blood").value)
+formData.append("location", document.getElementById("location").value)
+formData.append("password", password)
 
-};
+formData.append("nidFront", document.getElementById("nidFront").files[0])
+formData.append("nidBack", document.getElementById("nidBack").files[0])
 
 
 // =======================================
-// SEND DATA TO SERVER (NODE + MONGODB)
+// SEND DATA TO SERVER
 // =======================================
 
 const res = await fetch("http://127.0.0.1:5000/signup",{
 
 method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body: JSON.stringify(user)
+body: formData
 
 });
 
