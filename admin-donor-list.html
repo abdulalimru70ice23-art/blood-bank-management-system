@@ -14,7 +14,9 @@
 
 <body>
 
-<div class="container">
+<div class="dashboard">
+
+<!-- ================= SIDEBAR ================= -->
 
 <div class="sidebar">
 
@@ -23,7 +25,22 @@
 <ul>
 
 <li><a href="admin-dashboard.html">Dashboard</a></li>
-<li class="active">Donor List</li>
+
+<li class="active">
+<a href="admin-donor-list.html">Donor List</a>
+</li>
+
+<li>
+<a href="admin-requests.html">Blood Requests</a>
+</li>
+
+<li>
+<a href="admin-volunteers.html">Volunteers</a>
+</li>
+
+<li>
+<a href="admin-settings.html">Settings</a>
+</li>
 
 </ul>
 
@@ -32,9 +49,11 @@
 </div>
 
 
+<!-- ================= MAIN CONTENT ================= -->
+
 <div class="main">
 
-<h1>All Donors</h1>
+<h1>Donor List</h1>
 
 <table>
 
@@ -54,6 +73,10 @@
 
 <tbody id="donorTable">
 
+<tr>
+<td colspan="5">Loading...</td>
+</tr>
+
 </tbody>
 
 </table>
@@ -67,6 +90,8 @@
 
 async function loadDonors(){
 
+try{
+
 const res = await fetch("http://127.0.0.1:5000/donors");
 
 const donors = await res.json();
@@ -74,6 +99,13 @@ const donors = await res.json();
 const table = document.getElementById("donorTable");
 
 table.innerHTML="";
+
+if(donors.length === 0){
+
+table.innerHTML = `<tr><td colspan="5">No Donors Found</td></tr>`;
+return;
+
+}
 
 donors.forEach(donor=>{
 
@@ -96,6 +128,12 @@ table.appendChild(row);
 
 });
 
+}catch(err){
+
+console.log("Donor load error:", err);
+
+}
+
 }
 
 
@@ -104,9 +142,7 @@ async function deleteDonor(id){
 if(confirm("Delete this donor?")){
 
 await fetch(`http://127.0.0.1:5000/delete-donor/${id}`,{
-
 method:"DELETE"
-
 });
 
 alert("Donor Deleted");
@@ -116,7 +152,6 @@ loadDonors();
 }
 
 }
-
 
 loadDonors();
 
