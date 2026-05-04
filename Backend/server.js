@@ -96,7 +96,7 @@ res.send("Error saving donor");
 
 app.get("/donors", async (req,res)=>{
 
-const donors = await Donor.find();
+const donors = await Donor.find().sort({ _id: -1 });
 res.json(donors);
 
 });
@@ -570,6 +570,35 @@ res.status(500).send("Error")
 }
 
 })
+
+
+
+
+// ==============================
+// admin donor list page update 
+// ==============================
+app.put("/toggle-donor-status/:id", async (req, res) => {
+
+try{
+
+const donor = await Donor.findById(req.params.id);
+
+if(!donor){
+return res.status(404).json({message:"Donor not found"});
+}
+
+donor.isActive = !donor.isActive;
+
+await donor.save();
+
+res.json({message:"Status updated", isActive: donor.isActive});
+
+}catch(err){
+res.status(500).json({error: err.message});
+}
+
+});
+
 
 
 // ==============================

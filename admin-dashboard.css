@@ -70,8 +70,10 @@ opacity:1;
 /* Main */
 
 .main{
+      flex: 1;
 margin-left:250px;
-padding:40px;
+ padding: 20px;
+   overflow-x: auto;
 width:100%;
 background:#f4f4f4;
 min-height:100vh;

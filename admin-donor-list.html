@@ -30,17 +30,9 @@
 <a href="admin-donor-list.html">Donor List</a>
 </li>
 
-<li>
-<a href="admin-requests.html">Blood Requests</a>
-</li>
-
-<li>
-<a href="admin-volunteers.html">Volunteers</a>
-</li>
-
-<li>
-<a href="admin-settings.html">Settings</a>
-</li>
+<li><a href="admin-requests.html">Blood Requests</a></li>
+<li><a href="admin-volunteers.html">Volunteers</a></li>
+<li><a href="admin-settings.html">Settings</a></li>
 
 </ul>
 
@@ -55,28 +47,44 @@
 
 <h1>Donor List</h1>
 
+<!-- 🔍 FILTER SECTION -->
+<div style="margin-bottom:15px;">
+
+<select id="filterLocation">
+<option value="">All Locations</option>
+<option value="Rajshahi">Rajshahi</option>
+<option value="Dhaka">Dhaka</option>
+</select>
+
+<select id="filterStatus">
+<option value="">All Status</option>
+<option value="active">Active</option>
+<option value="inactive">Inactive</option>
+</select>
+
+<button onclick="applyFilter()">Filter</button>
+
+</div>
+
 <table>
 
 <thead>
 
 <tr>
-
 <th>Name</th>
 <th>Blood</th>
 <th>Location</th>
 <th>Phone</th>
+<th>Status</th>
 <th>Action</th>
-
 </tr>
 
 </thead>
 
 <tbody id="donorTable">
-
 <tr>
-<td colspan="5">Loading...</td>
+<td colspan="6">Loading...</td>
 </tr>
-
 </tbody>
 
 </table>
@@ -88,54 +96,111 @@
 
 <script>
 
-async function loadDonors(){
+// ===============================
+// RENDER TABLE (NEW)
+// ===============================
 
-try{
-
-const res = await fetch("http://127.0.0.1:5000/donors");
-
-const donors = await res.json();
+function renderTable(donors){
 
 const table = document.getElementById("donorTable");
-
-table.innerHTML="";
+table.innerHTML = "";
 
 if(donors.length === 0){
-
-table.innerHTML = `<tr><td colspan="5">No Donors Found</td></tr>`;
+table.innerHTML = `<tr><td colspan="6">No Donors Found</td></tr>`;
 return;
-
 }
 
 donors.forEach(donor=>{
 
 const row = document.createElement("tr");
 
-row.innerHTML=`
-
+row.innerHTML = `
 <td>${donor.name}</td>
 <td>${donor.blood}</td>
 <td>${donor.location}</td>
 <td>${donor.phone}</td>
 
 <td>
-<button onclick="deleteDonor('${donor._id}')">Delete</button>
+${donor.isActive ? 
+'<span style="color:green;">Active ✅</span>' : 
+'<span style="color:red;">Inactive ❌</span>'}
 </td>
 
+<td>
+
+<button onclick="toggleStatus('${donor._id}')">
+${donor.isActive ? "Deactivate" : "Activate"}
+</button>
+
+<button onclick="deleteDonor('${donor._id}')">Delete</button>
+
+</td>
 `;
 
 table.appendChild(row);
 
 });
 
+}
+
+
+// ===============================
+// LOAD DONORS
+// ===============================
+
+async function loadDonors(){
+
+try{
+
+const res = await fetch("http://127.0.0.1:5000/donors");
+const donors = await res.json();
+
+renderTable(donors);
+
 }catch(err){
-
 console.log("Donor load error:", err);
-
 }
 
 }
 
+
+// ===============================
+// FILTER FUNCTION
+// ===============================
+
+function applyFilter(){
+
+const location = document.getElementById("filterLocation").value;
+const status = document.getElementById("filterStatus").value;
+
+fetch("http://127.0.0.1:5000/donors")
+.then(res => res.json())
+.then(donors => {
+
+let filtered = donors;
+
+if(location){
+filtered = filtered.filter(d => d.location === location);
+}
+
+if(status === "active"){
+filtered = filtered.filter(d => d.isActive === true);
+}
+
+if(status === "inactive"){
+filtered = filtered.filter(d => d.isActive === false);
+}
+
+renderTable(filtered);
+
+});
+
+}
+
+
+// ===============================
+// DELETE DONOR
+// ===============================
 
 async function deleteDonor(id){
 
@@ -153,7 +218,25 @@ loadDonors();
 
 }
 
+
+
+async function toggleStatus(id){
+
+await fetch(`http://127.0.0.1:5000/toggle-donor-status/${id}`,{
+method:"PUT"
+});
+
 loadDonors();
+
+}
+
+
+// ===============================
+// INIT
+// ===============================
+
+loadDonors();
+
 
 </script>
 
