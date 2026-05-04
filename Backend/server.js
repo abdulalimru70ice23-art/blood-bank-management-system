@@ -72,6 +72,12 @@ try{
 const donor = new Donor(req.body);
 await donor.save();
 
+// 🔥 ADD THIS LINE
+await User.updateOne(
+  { phone: req.body.phone },
+  { isDonor: true }
+);
+
 res.send("Donor Added Successfully");
 
 }catch(err){
@@ -529,6 +535,37 @@ res.json(requests)
 }catch(err){
 
 res.status(500).json({error:"Server error"})
+
+}
+
+})
+
+
+
+
+
+// ==============================
+// TOGGLE DONOR STATUS
+// ==============================
+
+app.put("/toggle-donor/:phone", async (req,res)=>{
+
+try{
+
+const user = await User.findOne({phone:req.params.phone})
+
+if(!user){
+return res.status(404).send("User not found")
+}
+
+user.isDonor = !user.isDonor
+await user.save()
+
+res.json({isDonor:user.isDonor})
+
+}catch(err){
+
+res.status(500).send("Error")
 
 }
 

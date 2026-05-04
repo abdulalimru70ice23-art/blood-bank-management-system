@@ -10,7 +10,12 @@ bloodGroup:String,
 location:String,
 
 nidFront:String,
-nidBack:String
+nidBack:String,
+
+isDonor: {
+  type: Boolean,
+  default: false
+}
 
 })
 

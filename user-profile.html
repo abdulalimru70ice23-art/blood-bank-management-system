@@ -137,6 +137,61 @@ transform:translateY(-2px);
 
 
 
+/* ===== Donor status css ===== */
+.donor-box{
+margin-top:15px;
+padding:10px;
+border:1px solid #ddd;
+border-radius:10px;
+}
+
+.switch {
+position: relative;
+display: inline-block;
+width: 40px;
+height: 20px;
+}
+
+.switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #ccc;
+border-radius: 20px;
+}
+
+.slider:before {
+position: absolute;
+content: "";
+height: 16px;
+width: 16px;
+left: 2px;
+bottom: 2px;
+background-color: white;
+border-radius: 50%;
+transition: 0.3s;
+}
+
+input:checked + .slider {
+background-color: #16a085;
+}
+
+input:checked + .slider:before {
+transform: translateX(20px);
+}
+
+
+
+
 </style>
 
 </head>
@@ -158,6 +213,25 @@ transform:translateY(-2px);
 <p><b>Blood Group:</b> <span id="blood">Loading...</span></p>
 <p><b>Phone:</b> <span id="phone">Loading...</span></p>
 <p><b>Location:</b> <span id="location">Loading...</span></p>
+
+<!-- ================= Donor Status ================= -->
+<div class="donor-box">
+
+<p><b>Donor Status:</b> 
+<span id="donorStatusText" style="color:green;">Loading...</span>
+</p>
+
+<label class="switch">
+  <input type="checkbox" id="donorToggle">
+  <span class="slider"></span>
+</label>
+
+<p style="font-size:12px;color:gray;">
+Turn OFF if you no longer want to be a donor
+</p>
+
+</div>
+
 
 <div class="profile-buttons">
 
@@ -216,79 +290,124 @@ transform:translateY(-2px);
 const phone = localStorage.getItem("phone");
 
 if(!phone){
-
-alert("Please login first");
-window.location.href = "login.html";
-
+    alert("Please login first");
+    window.location.href = "login.html";
 }
 
 
 // ===============================
-// LOAD USER PROFILE
+// LOAD USER PROFILE + DONOR STATUS
 // ===============================
 
+const statusText = document.getElementById("donorStatusText");
+const toggle = document.getElementById("donorToggle");
+
 fetch(`http://127.0.0.1:5000/user/${phone}`)
-
 .then(res => res.json())
-
 .then(user => {
 
-document.getElementById("userName").innerText = user.name || "Unknown"
-document.getElementById("phone").innerText = user.phone || "Not available"
-document.getElementById("blood").innerText = user.bloodGroup || "Not set"
-document.getElementById("location").innerText = user.location || "Not set"
+    // ===== Basic Profile =====
+    document.getElementById("userName").innerText = user.name || "Unknown";
+    document.getElementById("phone").innerText = user.phone || "Not available";
+    document.getElementById("blood").innerText = user.bloodGroup || "Not set";
+    document.getElementById("location").innerText = user.location || "Not set";
+
+    // ===== Donor Status Logic =====
+
+    if(user.isDonor === undefined || user.isDonor === false){
+        statusText.innerHTML = "Not a Donor ❌";
+        toggle.checked = false;
+        toggle.disabled = true; // registration chara toggle off
+    }
+    else{
+        statusText.innerHTML = "Active Donor ✅";
+        toggle.checked = true;
+        toggle.disabled = false;
+    }
 
 })
-
 .catch(err => {
-
-console.log("User load error:", err);
-
+    console.log("User load error:", err);
 });
 
+
+// ===============================
+// TOGGLE DONOR STATUS
+// ===============================
+toggle.addEventListener("change", async () => {
+
+    // 👉 If user NOT donor & trying to ON
+    if(toggle.disabled){
+
+        const go = confirm(
+            "You are not a donor yet.\n\nDo you want to register as a donor?"
+        );
+
+        if(go){
+            window.location.href = "donate.html";
+        }
+
+        // toggle back off
+        toggle.checked = false;
+        return;
+    }
+
+    // 👉 Normal toggle (already donor)
+    const newStatus = toggle.checked;
+
+    await fetch("http://127.0.0.1:5000/toggle-donor", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            phone: phone,
+            isDonor: newStatus
+        })
+    });
+
+    if(newStatus){
+        statusText.innerHTML = "Active Donor ✅";
+    } else {
+        statusText.innerHTML = "Inactive Donor ❌";
+    }
+
+});
 
 // ===============================
 // LOAD USER REQUESTS
 // ===============================
 
 fetch(`http://127.0.0.1:5000/my-requests/${phone}`)
-
 .then(res => res.json())
-
 .then(data => {
 
-const table = document.getElementById("requestTable");
+    const table = document.getElementById("requestTable");
+    table.innerHTML = "";
 
-table.innerHTML = "";
+    if(data.length === 0){
+        table.innerHTML = `<tr><td colspan="4">No Requests Yet</td></tr>`;
+        return;
+    }
 
-if(data.length === 0){
+    data.forEach(r => {
 
-table.innerHTML = `<tr><td colspan="4">No Requests Yet</td></tr>`;
-return;
+        const row = document.createElement("tr");
 
-}
+        row.innerHTML = `
+        <td>${r.location}</td>
+        <td>${r.blood}</td>
+        <td>${r.status}</td>
+        <td>${new Date(r.date).toLocaleDateString()}</td>
+        `;
 
-data.forEach(r => {
+        table.appendChild(row);
 
-const row = document.createElement("tr");
-
-row.innerHTML = `
-<td>${r.location}</td>
-<td>${r.blood}</td>
-<td>${r.status}</td>
-<td>${new Date(r.date).toLocaleDateString()}</td>
-`;
-
-table.appendChild(row);
-
-});
+    });
 
 })
-
 .catch(err => {
-
-console.log("Request load error:", err);
-
+    console.log("Request load error:", err);
 });
 
 
@@ -297,9 +416,7 @@ console.log("Request load error:", err);
 // ===============================
 
 function editProfile(){
-
-window.location.href = "edit-profile.html";
-
+    window.location.href = "edit-profile.html";
 }
 
 </script>

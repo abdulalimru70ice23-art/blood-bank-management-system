@@ -13,7 +13,12 @@ location:String,
 profession:String,
 lastDonation:String,
 emergency:String,
-reason:String
+reason:String,
+
+isActive:{
+  type:Boolean,
+  default:true
+}
 
 });
 
