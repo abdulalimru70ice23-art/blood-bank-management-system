@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>User Verification - LifeShare</title>
+<link rel="stylesheet" href="admin-dashboard.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<h2>🩸 LifeShare</h2>
+
+<ul>
+<li><a href="admin-dashboard.html">Dashboard</a></li>
+<li><a href="admin-donor-list.html">Donor List</a></li>
+
+<li class="active">
+<a href="#">User Verification</a>
+</li>
+
+<li><a href="admin-requests.html">Blood Requests</a></li>
+<li><a href="admin-volunteers.html">Volunteers</a></li>
+<li><a href="admin-settings.html">Settings</a></li>
+</ul>
+
+<a href="index.html" class="logout">Logout</a>
+</div>
+
+
+<!-- MAIN -->
+<div class="main">
+
+<h1>User Verification</h1>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Phone</th>
+<th>Blood</th>
+<th>Location</th>
+<th>NID</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="userTable">
+<tr><td colspan="7">Loading...</td></tr>
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<script>
+
+async function loadUsers(){
+
+const res = await fetch("http://127.0.0.1:5000/all-users");
+const users = await res.json();
+
+const table = document.getElementById("userTable");
+table.innerHTML = "";
+
+users.forEach(user => {
+
+const row = document.createElement("tr");
+
+row.innerHTML = `
+<td>${user.name}</td>
+<td>${user.phone}</td>
+<td>${user.bloodGroup}</td>
+<td>${user.location}</td>
+
+<td>
+<a href="http://127.0.0.1:5000/uploads/${user.nidFront}" target="_blank">Front</a> |
+<a href="http://127.0.0.1:5000/uploads/${user.nidBack}" target="_blank">Back</a>
+</td>
+
+<td>
+${user.isVerified ? "Verified ✅" : "Pending ⏳"}
+</td>
+
+<td>
+<button onclick="verifyUser('${user._id}')">Verify</button>
+<button onclick="deleteUser('${user._id}')">Delete</button>
+</td>
+`;
+
+table.appendChild(row);
+
+});
+
+}
+
+
+// VERIFY
+async function verifyUser(id){
+
+await fetch(`http://127.0.0.1:5000/verify-user/${id}`, {
+method:"PUT"
+});
+
+alert("User Verified");
+loadUsers();
+
+}
+
+
+// DELETE
+async function deleteUser(id){
+
+if(confirm("Delete this user?")){
+
+await fetch(`http://127.0.0.1:5000/delete-user/${id}`, {
+method:"DELETE"
+});
+
+alert("User Deleted");
+loadUsers();
+
+}
+
+}
+
+loadUsers();
+
+</script>
+
+</body>
+</html>

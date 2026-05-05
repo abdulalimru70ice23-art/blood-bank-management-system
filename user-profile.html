@@ -355,16 +355,15 @@ toggle.addEventListener("change", async () => {
     // 👉 Normal toggle (already donor)
     const newStatus = toggle.checked;
 
-    await fetch("http://127.0.0.1:5000/toggle-donor", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            phone: phone,
-            isDonor: newStatus
-        })
-    });
+await fetch(`http://127.0.0.1:5000/toggle-donor/${phone}`, {
+    method: "PUT",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        isDonor: newStatus
+    })
+});
 
     if(newStatus){
         statusText.innerHTML = "Active Donor ✅";

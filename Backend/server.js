@@ -558,7 +558,7 @@ if(!user){
 return res.status(404).send("User not found")
 }
 
-user.isDonor = !user.isDonor
+user.isDonor = req.body.isDonor
 await user.save()
 
 res.json({isDonor:user.isDonor})
@@ -597,6 +597,36 @@ res.json({message:"Status updated", isActive: donor.isActive});
 res.status(500).json({error: err.message});
 }
 
+});
+
+
+
+
+
+// ===============================
+// GET ALL USERS (ADMIN)
+// ===============================
+app.get("/all-users", async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
+
+
+// ===============================
+// VERIFY USER
+// ===============================
+app.put("/verify-user/:id", async (req, res) => {
+  await User.findByIdAndUpdate(req.params.id, { isVerified: true });
+  res.send("User Verified");
+});
+
+
+// ===============================
+// DELETE USER
+// ===============================
+app.delete("/delete-user/:id", async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.send("User Deleted");
 });
 
 
